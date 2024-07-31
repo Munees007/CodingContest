@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "react-matrix-effect": "^1.1.0",
+    "screenfull": "^6.0.2"
   },
   "devDependencies": {
     "@types/react": "^18.3.3",
