@@ -2,6 +2,8 @@ import { useEffect } from 'react'
 import './App.css'
 import { enterFullScreen } from './Functions/FullScreen'
 import Home from './Pages/Home'
+import {BrowserRouter as Router,Routes,Route} from 'react-router-dom'
+import CodeSpace from './Pages/CodeSpace'
 
 function App() {
   useEffect(()=>{
@@ -18,7 +20,12 @@ function App() {
   })
   return (
     <div onClick={enterFullScreen}>
-      <Home/>
+      <Router>
+        <Routes>
+            <Route path='/' element={<Home/>}></Route>
+            <Route path='codespace' element={<CodeSpace/>}></Route>
+        </Routes>
+      </Router>
     </div>
   )
 }
