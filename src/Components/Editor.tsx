@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import DropDown from "./DropDown";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/ReactToastify.min.css'
-import { MdPlayArrow } from "react-icons/md";
+import { VscPlay } from "react-icons/vsc";
 
 interface EditorProps {
   ExecuteCode: (code: string, language: string, file: string) => void;
@@ -63,7 +63,7 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result }) => {
           condition={"Language"}
         />
         <div className="absolute right-10 top-22">
-          <MdPlayArrow onClick={runCode} title="Run" size={35} className="cursor-pointer hover:scale-105 active:scale-90" />
+          <VscPlay onClick={runCode} title="Run" size={35} className="cursor-pointer hover:scale-105 active:scale-90" />
         </div>
       </div>
       <div className="flex w-full gap-4 mt-7">
