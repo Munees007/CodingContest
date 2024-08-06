@@ -6,6 +6,7 @@ import DropDown from "./DropDown";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/ReactToastify.min.css'
 import { MdPlayArrow } from "react-icons/md";
+
 interface EditorProps {
   ExecuteCode: (code: string, language: string, file: string) => void;
   Result: any;
@@ -16,8 +17,8 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result }) => {
   const [theme, SetTheme] = useState<string>("");
   const [language, SetLanguage] = useState<string>("");
   const runCode = () => {
-    code !==""? 
-    ExecuteCode(code, language, "main." + language) : toast.error("Type something");
+    code !== "" ?
+      ExecuteCode(code, language, "main." + language) : toast.error("Type something");
   };
   const themes = [
     { label: "Twilight", value: "twilight" },
@@ -46,7 +47,9 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result }) => {
   };
   return (
     <div className={`ace-${theme ? theme : "dracula"} relative h-screen p-5 overflow-hidden`}>
-      <div className="flex gap-4">
+      <p className="text-4xl font-bold text-center">CODING CONTEST</p>
+
+      <div className="flex gap-4 mt-6">
         <DropDown
           options={themes}
           onSelect={handleTheme}
@@ -59,12 +62,12 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result }) => {
           theme={theme}
           condition={"Language"}
         />
-        <div  className="absolute right-10 top-3">
-            <MdPlayArrow onClick={runCode} title="Run" size={35} className="cursor-pointer hover:scale-105 active:scale-90"/>
+        <div className="absolute right-10 top-22">
+          <MdPlayArrow onClick={runCode} title="Run" size={35} className="cursor-pointer hover:scale-105 active:scale-90" />
         </div>
       </div>
-      <div className="flex w-full gap-4 mt-3">
-        <div className="border-2 w-fit mt-2 rounded-sm resize-x">
+      <div className="flex w-full gap-4 mt-7">
+        <div className="border-2 w-fit mt-2  rounded-sm resize-x">
           <AceEditor
             mode={`${language === "cpp" ? "c_cpp" : language}`}
             setOptions={{
@@ -74,11 +77,12 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result }) => {
             }}
             theme={`${theme ? theme : "dracula"}`}
             width="45rem"
+            height="38rem"
             showPrintMargin={false}
             fontSize={20}
             onChange={(e) => {
-                language ?
-              setCode(e) : toast.warning("Please Choose the language")
+              language ?
+                setCode(e) : toast.warning("Please Choose the language")
             }}
           />
         </div>
@@ -87,16 +91,33 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result }) => {
           <p className="whitespace-pre">{Result?.result?.output}</p>
         </div>
       </div>
-      <div className="flex  items-center absolute right-3 bottom-3 px-5 gap-5 rounded-md border-2">
-        <img src="./src/assets/images/MwLogo.png" className="w-14"></img>
-        <div className="flex flex-col items-center">
-        <p className="">Developed by</p>
-        <p>P. Muneeswaran,</p>
-        <p>III BCA B.</p>
-        {/* <p>Chairman of the Softech Association.</p> */}
+      <div className="flex w-full">
+      <div className="flex w-full mt-6">
+        <div className="flex  items-center w-fit z-50  px-5 gap-5 rounded-md border-2">
+          <img src="./src/assets/images/MwLogo.png" className="w-14"></img>
+          <div className="flex flex-col items-center">
+            <p className="">Organised by</p>
+            <p>R. Karthik Balan,</p>
+            <p>III BCA B.</p>
+            {/* <p>Chairman of the Softech Association.</p> */}
+          </div>
         </div>
       </div>
-      <ToastContainer position="top-center" stacked/>
+
+      <div className="flex w-full justify-end mt-6">
+        <div className="flex  items-center w-fit z-50  px-5 gap-5 rounded-md border-2">
+          <img src="./src/assets/images/MwLogo.png" className="w-14"></img>
+          <div className="flex flex-col items-center">
+            <p className="">Developed by</p>
+            <p>P. Muneeswaran,</p>
+            <p>III BCA B.</p>
+            {/* <p>Chairman of the Softech Association.</p> */}
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <ToastContainer position="top-center" stacked />
     </div>
   );
 };
