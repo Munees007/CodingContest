@@ -1,15 +1,19 @@
 
-import  { useRef, useEffect, useState } from "react";
+import  React, { useRef, useEffect, useState } from "react";
 import Editor from "./Editor";
 
-const Compiler = () => {
+interface CompilerProps{
+  questionNo:number
+}
+const Compiler:React.FC<CompilerProps> = ({questionNo}) => {
   const iFrameRef = useRef<HTMLIFrameElement>(null);
-  const [result,setResult] = useState(null);
+  const [result,setResult] = useState<string | null>(null);
   const [IsCodeChanged,SetCodeChanged] = useState(false);
   // const [number,setnum] = useState(null);
 
   const ExecuteCode =  (code:string, language:string, file:string) => {
     const iFrame = iFrameRef.current;
+    setResult(null);
     if(!iFrame || !iFrame.contentWindow) return
     iFrame.contentWindow.postMessage(
       {
@@ -46,7 +50,7 @@ const Compiler = () => {
     const Handle = (e:MessageEvent) => {
       if (e.data && e.data.language) {
         //console.log(e.data.result.output);
-        setResult(e.data);
+        setResult(e.data.result.output);
         console.log(result);
         SetCodeChanged(false);
         //SetCodeChanged(false);
@@ -76,7 +80,7 @@ const Compiler = () => {
       width="100%"
       className="iframe hidden"
     ></iframe>
-    <Editor  ExecuteCode={ExecuteCode} Result={result}/>
+    <Editor  ExecuteCode={ExecuteCode} Result={result} questionNo={questionNo}/>
     </div>
   );
 };

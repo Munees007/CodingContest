@@ -1,24 +1,31 @@
 import AceEditor from "react-ace";
 import "../Modules/language";
 import "../Modules/themes";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DropDown from "./DropDown";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/ReactToastify.min.css'
 import { VscPlay } from "react-icons/vsc";
+import { VscSave } from "react-icons/vsc";
 
 interface EditorProps {
   ExecuteCode: (code: string, language: string, file: string) => void;
   Result: any;
+  questionNo:number;
 }
 
-const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result }) => {
-  const [code, setCode] = useState<string>("");
+const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo }) => {
+  const [code, setCode] = useState<string>(()=>{
+    return localStorage.getItem(questionNo.toString()) || "";
+  });
   const [theme, SetTheme] = useState<string>("");
   const [language, SetLanguage] = useState<string>("");
   const runCode = () => {
-    code !== "" ?
-      ExecuteCode(code, language, "main." + language) : toast.error("Type something");
+    if (code !== "") {
+      ExecuteCode(code, language, "main." + language);
+    } else {
+      toast.error("Type something");
+    }
   };
   const themes = [
     { label: "Twilight", value: "twilight" },
@@ -41,10 +48,18 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result }) => {
 
   const handleTheme = (value: string) => {
     SetTheme(value);
+    localStorage.setItem('theme',value);
   };
   const handleLanguage = (value: string) => {
     SetLanguage(value);
   };
+  const handleSave = ()=>{
+    localStorage.setItem(questionNo.toString(),code);
+  }
+  useEffect(()=>{
+    const storedCode = localStorage.getItem(questionNo.toString()) || "";
+    setCode(storedCode);
+  },[questionNo])
   return (
     <div className={`ace-${theme ? theme : "dracula"} relative h-screen p-5 overflow-hidden`}>
       <p className="text-4xl font-bold text-center">CODING CONTEST</p>
@@ -62,8 +77,10 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result }) => {
           theme={theme}
           condition={"Language"}
         />
-        <div className="absolute right-10 top-22">
-          <VscPlay onClick={runCode} title="Run" size={35} className="cursor-pointer hover:scale-105 active:scale-90" />
+        <p className="text-center">{questionNo}</p>
+        <div className="absolute right-10 top-22 flex">
+          <VscSave onClick={handleSave} title="Save" size={30} className="mr-4 cursor-pointer hover:scale-105 active:scale-90" />
+          <VscPlay onClick={runCode} title="Run" size={30} className="cursor-pointer hover:scale-105 active:scale-90" />
         </div>
       </div>
       <div className="flex w-full gap-4 mt-7">
@@ -77,9 +94,10 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result }) => {
             }}
             theme={`${theme ? theme : "dracula"}`}
             width="45rem"
-            height="38rem"
+            height="30rem"
             showPrintMargin={false}
             fontSize={20}
+            value={code}
             onChange={(e) => {
               language ?
                 setCode(e) : toast.warning("Please Choose the language")
@@ -88,12 +106,12 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result }) => {
         </div>
         <div className="border-2 w-full mt-2 p-2">
           <p>Output:</p>
-          <p className="whitespace-pre">{Result?.result?.output}</p>
+          <p className="whitespace-pre">{!Result ? "compiling":Result}</p>
         </div>
       </div>
       <div className="flex w-full">
       <div className="flex w-full mt-6">
-        <div className="flex  items-center w-fit z-50  px-5 gap-5 rounded-md border-2">
+        <div className="flex  items-center w-fit z-40  px-5 gap-5 rounded-md border-2">
           <img src="./src/assets/images/MwLogo.png" className="w-14"></img>
           <div className="flex flex-col items-center">
             <p className="">Organised by</p>
@@ -105,7 +123,7 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result }) => {
       </div>
 
       <div className="flex w-full justify-end mt-6">
-        <div className="flex  items-center w-fit z-50  px-5 gap-5 rounded-md border-2">
+        <div className="flex  items-center w-fit z-40  px-5 gap-5 rounded-md border-2">
           <img src="./src/assets/images/MwLogo.png" className="w-14"></img>
           <div className="flex flex-col items-center">
             <p className="">Developed by</p>
