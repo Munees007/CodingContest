@@ -71,9 +71,7 @@ const CodeSpace = () => {
       
       <div
         className={`absolute z-50 left-0 h-screen overflow-y-auto transform${showSlide ? "translate-x-0" : "hidden -translate-x-full"} text-black border-2 w-96 bg-gray-500 duration-500`}
-        onBlur={() => {
-          setShowSlide(false);
-        }}
+        onBlur={handleShowSlide}
       >
         <VscArrowLeft
           size={35}
@@ -83,7 +81,7 @@ const CodeSpace = () => {
             showSlide ? "" : "hidden"
           }`}
         />
-        <div className={`  z-50     `}>
+        <div className={`z-50`}>
           {Object.entries(question).map(([key, question], index) => (
             <Question key={key} question={question} questionNo={index + 1} setQuestion={handleQuestion}/>
           ))}

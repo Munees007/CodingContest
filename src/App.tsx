@@ -23,7 +23,7 @@ function App() {
       <Router>
         <Routes>
             <Route path='/' element={<Home/>}></Route>
-            <Route path='codespace' element={<CodeSpace/>}></Route>
+            <Route path='/codespace' element={<CodeSpace/>}></Route>
         </Routes>
       </Router>
     </div>
