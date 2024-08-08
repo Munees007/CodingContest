@@ -54,7 +54,9 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo }) => {
     SetLanguage(value);
   };
   const handleSave = ()=>{
+    if(code === "") {toast.error("Please Type Program Before Saving"); return} 
     localStorage.setItem(questionNo.toString(),code);
+    toast.success("Saved Successfully");
   }
   useEffect(()=>{
     const storedCode = localStorage.getItem(questionNo.toString()) || "";
@@ -135,7 +137,7 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo }) => {
       </div>
       </div>
 
-      <ToastContainer position="top-center" stacked />
+      <ToastContainer position="top-right" stacked />
     </div>
   );
 };

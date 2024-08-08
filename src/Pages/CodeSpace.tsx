@@ -61,6 +61,7 @@ const CodeSpace = () => {
   return (
     <div className={`ace-${theme} relative w-full`}>
       <VscArrowRight
+        title="Click to see Questions"
         size={35}
         onClick={handleShowSlide}
         className={`absolute left-0 z-50 top-5   animate-scale cursor-pointer  ${
@@ -76,6 +77,7 @@ const CodeSpace = () => {
       >
         <VscArrowLeft
           size={35}
+          title="Close SlideBar"
           onClick={handleShowSlide}
           className={`fixed left-80 z-50 top-3 animate-scale cursor-pointer ${
             showSlide ? "" : "hidden"
