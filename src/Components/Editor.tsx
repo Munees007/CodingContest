@@ -79,14 +79,14 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo }) => {
           theme={theme}
           condition={"Language"}
         />
-        <p className="text-center">{questionNo}</p>
+        <p className="text-center  text-xl font-bold  ">QUESTION: {questionNo}</p>
         <div className="absolute right-10 top-22 flex">
           <VscSave onClick={handleSave} title="Save" size={30} className="mr-4 cursor-pointer hover:scale-105 active:scale-90" />
           <VscPlay onClick={runCode} title="Run" size={30} className="cursor-pointer hover:scale-105 active:scale-90" />
         </div>
       </div>
       <div className="flex w-full gap-4 mt-7">
-        <div className="border-2 w-fit mt-2  rounded-sm resize-x">
+        <div className="w-fit mt-2   rounded-sm resize-x">
           <AceEditor
             mode={`${language === "cpp" ? "c_cpp" : language}`}
             setOptions={{
@@ -97,7 +97,9 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo }) => {
             theme={`${theme ? theme : "dracula"}`}
             width="45rem"
             height="30rem"
+            style={{border:"2px solid",borderRadius:"8px"}}
             showPrintMargin={false}
+            className="shadow-md shadow-gray-500"
             fontSize={20}
             value={code}
             onChange={(e) => {
@@ -106,9 +108,9 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo }) => {
             }}
           />
         </div>
-        <div className="border-2 w-full mt-2 p-2">
-          <p>Output:</p>
-          <p className="whitespace-pre">{!Result ? "compiling":Result}</p>
+        <div style={{border:"2px solid",borderRadius:"8px"}} className={` w-full mt-2 h-[30rem] p-2 overflow-y-auto shadow-md shadow-gray-500`}>
+          <p className="text-2xl font-serif font-bold">Output:</p>
+          <p className="whitespace-pre mt-4 ml-4 font-mono text-xl">{!Result ? "": Result }</p>
         </div>
       </div>
       <div className="flex w-full">

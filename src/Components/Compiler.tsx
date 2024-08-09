@@ -13,7 +13,7 @@ const Compiler:React.FC<CompilerProps> = ({questionNo}) => {
 
   const ExecuteCode =  (code:string, language:string, file:string) => {
     const iFrame = iFrameRef.current;
-    setResult(null);
+    setResult("Compiling");
     if(!iFrame || !iFrame.contentWindow) return
     iFrame.contentWindow.postMessage(
       {
