@@ -1,4 +1,4 @@
-import React ,{useState} from "react";
+import React ,{useEffect, useState} from "react";
 import '../Modules/themes';
 type options = {
     label:string;
@@ -8,12 +8,17 @@ interface DropDownProps{
     options:options[],
     onSelect:any,
     condition:any,
-    theme:any
+    theme:any,
+    value:string
 }
 
-const DropDown:React.FC<DropDownProps> = ({options,onSelect,condition,theme}) => {
+const DropDown:React.FC<DropDownProps> = ({options,onSelect,condition,theme,value}) => {
 
-    const [selectedValue, setSelectedValue] = useState('');
+    const [selectedValue, setSelectedValue] = useState<string>('');
+
+    useEffect(()=>{
+        setSelectedValue(value)
+    },)
 
     const handleChange = (event:any) => {
         const selectedOption = event.target.value;

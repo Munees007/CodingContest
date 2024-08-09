@@ -5,15 +5,22 @@ import Editor from "./Editor";
 interface CompilerProps{
   questionNo:number
 }
+export interface ResultType {
+  output:string,  
+  success:boolean
+}
 const Compiler:React.FC<CompilerProps> = ({questionNo}) => {
   const iFrameRef = useRef<HTMLIFrameElement>(null);
-  const [result,setResult] = useState<string | null>(null);
+  const [result,setResult] = useState<ResultType | null>(null);
   const [IsCodeChanged,SetCodeChanged] = useState(false);
   // const [number,setnum] = useState(null);
 
   const ExecuteCode =  (code:string, language:string, file:string) => {
     const iFrame = iFrameRef.current;
-    setResult("Compiling");
+    setResult({
+      output:"Compiling",
+      success:true
+    });
     if(!iFrame || !iFrame.contentWindow) return
     iFrame.contentWindow.postMessage(
       {
@@ -50,7 +57,10 @@ const Compiler:React.FC<CompilerProps> = ({questionNo}) => {
     const Handle = (e:MessageEvent) => {
       if (e.data && e.data.language) {
         //console.log(e.data.result.output);
-        setResult(e.data.result.output);
+        setResult({
+          output:e.data.result.output,
+          success:e.data.result.success
+        });
         console.log(result);
         SetCodeChanged(false);
         //SetCodeChanged(false);

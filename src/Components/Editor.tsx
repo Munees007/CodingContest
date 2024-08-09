@@ -7,10 +7,15 @@ import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/ReactToastify.min.css'
 import { VscPlay } from "react-icons/vsc";
 import { VscSave } from "react-icons/vsc";
+import Lottie from "lottie-react";
+import loading from '../assets/animations/loading.json';
+import empty from '../assets/animations/codeStart.json';
+import error1 from "../assets/animations/error1.json";
+import { ResultType } from "./Compiler";
 
 interface EditorProps {
   ExecuteCode: (code: string, language: string, file: string) => void;
-  Result: any;
+  Result: ResultType | null;
   questionNo:number;
 }
 
@@ -18,8 +23,13 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo }) => {
   const [code, setCode] = useState<string>(()=>{
     return localStorage.getItem(questionNo.toString()) || "";
   });
-  const [theme, SetTheme] = useState<string>("");
-  const [language, SetLanguage] = useState<string>("");
+  const [theme, SetTheme] = useState<string>(()=>{
+    return localStorage.getItem("theme") || "dracula";
+  });
+  const [language, SetLanguage] = useState<string>(()=>{
+    return localStorage.getItem("Question"+questionNo.toString() +"language") || "java";
+  });
+
   const runCode = () => {
     if (code !== "") {
       ExecuteCode(code, language, "main." + language);
@@ -53,9 +63,15 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo }) => {
   const handleLanguage = (value: string) => {
     SetLanguage(value);
   };
+  useEffect(()=>{
+    const temp = localStorage.getItem("Question"+questionNo.toString() +"language") || "java";
+
+    SetLanguage(temp);
+  },[questionNo])
   const handleSave = ()=>{
     if(code === "") {toast.error("Please Type Program Before Saving"); return} 
     localStorage.setItem(questionNo.toString(),code);
+    localStorage.setItem("Question"+questionNo.toString() +"language",language);
     toast.success("Saved Successfully");
   }
   useEffect(()=>{
@@ -71,12 +87,14 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo }) => {
           options={themes}
           onSelect={handleTheme}
           theme={theme}
+          value={theme}
           condition={"Theme"}
         />
         <DropDown
           options={languages}
           onSelect={handleLanguage}
           theme={theme}
+          value={language}
           condition={"Language"}
         />
         <p className="text-center  text-xl font-bold  ">QUESTION: {questionNo}</p>
@@ -110,13 +128,38 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo }) => {
         </div>
         <div style={{border:"2px solid",borderRadius:"8px"}} className={` w-full mt-2 h-[30rem] p-2 overflow-y-auto shadow-md shadow-gray-500`}>
           <p className="text-2xl font-serif font-bold">Output:</p>
-          <p className="whitespace-pre mt-4 ml-4 font-mono text-xl">{!Result ? "": Result }</p>
+          <div className="w-full">
+            {
+              !Result ? 
+                <div className="w-full flex justify-center">
+                    <Lottie animationData={empty} className="w-96" loop={true}/>
+                </div> 
+              :
+                Result.output === "Compiling" ?
+                  <div className="w-full flex justify-center">
+                       <Lottie animationData={loading} className="w-96" loop={true}/>
+                  </div>
+                :
+                  Result.success ?
+                  <div className="whitespace-pre mt-4 ml-4 font-mono text-xl">
+                    <p>{Result.output}</p>
+                  </div>
+                  :
+                  <div className="w-full flex flex-col">
+                      <div className="w-full flex justify-center">
+                       <Lottie animationData={error1} className="w-44 -mt-10" loop={true}/>
+                      </div>
+                       <p>{Result.output}</p>
+                  </div>
+                  
+            }
+          </div>
         </div>
       </div>
       <div className="flex w-full">
       <div className="flex w-full mt-6">
         <div className="flex  items-center w-fit z-40  px-5 gap-5" style={{border:"2px solid",borderRadius:"8px"}}>
-          <img src="./src/assets/images/MwLogo.png" className="w-14"></img>
+          <img src="./src/assets/images/3.jpg" className="w-14 rounded-full shadow-sm shadow-black border-2 border-black"></img>
           <div className="flex flex-col items-center">
             <p className="">Organised by</p>
             <p>R. Karthik Balan,</p>
