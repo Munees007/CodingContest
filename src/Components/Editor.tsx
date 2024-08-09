@@ -115,7 +115,7 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo }) => {
       </div>
       <div className="flex w-full">
       <div className="flex w-full mt-6">
-        <div className="flex  items-center w-fit z-40  px-5 gap-5 rounded-md border-2">
+        <div className="flex  items-center w-fit z-40  px-5 gap-5" style={{border:"2px solid",borderRadius:"8px"}}>
           <img src="./src/assets/images/MwLogo.png" className="w-14"></img>
           <div className="flex flex-col items-center">
             <p className="">Organised by</p>
@@ -127,7 +127,7 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo }) => {
       </div>
 
       <div className="flex w-full justify-end mt-6">
-        <div className="flex  items-center w-fit z-40  px-5 gap-5 rounded-md border-2">
+        <div className="flex  items-center w-fit z-40  px-5 gap-5" style={{border:"2px solid",borderRadius:"8px"}}>
           <img src="./src/assets/images/MwLogo.png" className="w-14"></img>
           <div className="flex flex-col items-center">
             <p className="">Developed by</p>
