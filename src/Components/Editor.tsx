@@ -15,6 +15,7 @@ import { ResultType } from "./Compiler";
 import { FaTrash } from "react-icons/fa";
 import { answers, answersType } from "../Modules/answers";
 import successAni from "../assets/animations/sucess1.json";
+import timerAni from "../assets/animations/timer1.json";
 
 interface EditorProps {
   ExecuteCode: (code: string, language: string, file: string) => void;
@@ -33,12 +34,25 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
   const [code, setCode] = useState<string>(()=>{
     return localStorage.getItem(questionNo.toString()) || "";
   });
-  const [answeredQuestion,setAnsweredQuestions] = useState<answeredType>({answered1:false,
+  const [timerRunning,setTimerRunning] = useState<boolean>(true);
+  const [timer,setTimer] = useState<number>(()=>{
+    const temp = localStorage.getItem("timer")
+    if(temp){
+      return parseInt(temp)
+    } 
+    else{
+      localStorage.setItem("timer",(1*10).toString());
+      return 1*10; // time in seconds 
+    }
+  })
+  const [answeredQuestion,setAnsweredQuestions] = useState<answeredType>(()=>{
+    const storedData = localStorage.getItem("answeredData");
+    return  storedData ? JSON.parse(storedData) : {answered1:false,
     answered2:false,
     answered3:false,
     answered4:false,
     answered5:false
-  });
+  }});
   //const [canSubmit,setCanSubmit] = useState<boolean>(false);
   const [theme, SetTheme] = useState<string>(()=>{
     return localStorage.getItem("theme") || "dracula";
@@ -56,6 +70,28 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
       toast.error("Type something");
     }
   };
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}m ${remainingSeconds}s`;
+  };
+
+  useEffect(()=>{
+    if(!timerRunning) return
+      const handleTimer = setInterval(()=>{
+          setTimer((preValue)=> preValue -1);
+          localStorage.setItem("timer",timer.toString())
+          
+      },1000)
+
+      if(timer ===0)
+      {
+        setTimer(0);
+        setTimerRunning(false);
+        localStorage.setItem("timer","0");
+      }
+      return() => clearInterval(handleTimer)      
+  },[timer,timerRunning])
 
   // useEffect(()=>{
   //     if(Result?.output)
@@ -115,6 +151,10 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
       toast.warning("Please correct the errors before submitting")
     }
   };
+
+  useEffect(()=>{
+    localStorage.setItem("answeredData",JSON.stringify(answeredQuestion));
+  },[answeredQuestion])
   useEffect(()=>{
     const temp = localStorage.getItem("Question"+questionNo.toString() +"language") || "java";
 
@@ -140,6 +180,7 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
     const temp = Math.floor(Math.random() * val);
     return temp;
   }  
+  
   return (
     <div className={`ace-${theme ? theme : "dracula"} relative h-screen p-5 overflow-hidden`}>
       <p className="text-4xl font-bold text-center">CODING CONTEST</p>
@@ -167,6 +208,10 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
           condition={"Language"}
         />
         <p className="text-center  text-xl font-bold  ">QUESTION: {questionNo}</p>
+        <div className="flex absolute right-40 mr-10 top-16 justify-center items-center">
+          <Lottie animationData={timerAni} loop={true} className="w-20"/>
+          <p>{formatTime(timer)}</p>
+        </div>
         <div className="absolute right-10 top-22 flex">
           <button > 
             <VscCheck size={30} onClick={handleSubmit}  className={`mr-4 hover:scale-105 active:scale-90`}/>

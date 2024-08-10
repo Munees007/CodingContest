@@ -51,7 +51,7 @@ const Form: React.FC<FromProps> = ({ onSubmit }) => {
 
   return (
     <div className="">
-      <Lottie animationData={formAni} loop className="w-32 absolute top-8 -rotate-12 left-72"/>
+      <Lottie animationData={formAni} loop className="w-32 absolute top-16 -rotate-12 left-80"/>
       <form
         onSubmit={handleSubmit}
         className="bg-white flex flex-col w-[40rem] p-8 rounded-lg shadow-lg"
