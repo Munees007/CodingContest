@@ -72,7 +72,9 @@ const Compiler:React.FC<CompilerProps> = ({questionNo}) => {
     };
   },[IsCodeChanged]);
 
-
+  const handleClearResult = () =>{
+    setResult(null)
+  }
   // useEffect(() => {
   //   console.log(result);
   // }, [result,number]);
@@ -90,7 +92,7 @@ const Compiler:React.FC<CompilerProps> = ({questionNo}) => {
       width="100%"
       className="iframe hidden"
     ></iframe>
-    <Editor  ExecuteCode={ExecuteCode} Result={result} questionNo={questionNo}/>
+    <Editor  ExecuteCode={ExecuteCode} Result={result} questionNo={questionNo} clearOutput={handleClearResult}/>
     </div>
   );
 };

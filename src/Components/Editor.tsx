@@ -5,31 +5,50 @@ import React, { useEffect, useState } from "react";
 import DropDown from "./DropDown";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/ReactToastify.min.css'
-import { VscPlay } from "react-icons/vsc";
+import { VscCheck,VscPlay, } from "react-icons/vsc";
 import { VscSave } from "react-icons/vsc";
 import Lottie from "lottie-react";
 import loading from '../assets/animations/loading.json';
 import empty from '../assets/animations/codeStart.json';
 import error1 from "../assets/animations/error1.json";
 import { ResultType } from "./Compiler";
+import { FaTrash } from "react-icons/fa";
+import { answers, answersType } from "../Modules/answers";
+import successAni from "../assets/animations/sucess1.json";
 
 interface EditorProps {
   ExecuteCode: (code: string, language: string, file: string) => void;
   Result: ResultType | null;
   questionNo:number;
+  clearOutput:() => void;
 }
-
-const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo }) => {
+type answeredType = {
+  answered1:boolean;
+  answered2:boolean;
+  answered3:boolean;
+  answered4:boolean;
+  answered5:boolean;
+}
+const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOutput }) => {
   const [code, setCode] = useState<string>(()=>{
     return localStorage.getItem(questionNo.toString()) || "";
   });
+  const [answeredQuestion,setAnsweredQuestions] = useState<answeredType>({answered1:false,
+    answered2:false,
+    answered3:false,
+    answered4:false,
+    answered5:false
+  });
+  //const [canSubmit,setCanSubmit] = useState<boolean>(false);
   const [theme, SetTheme] = useState<string>(()=>{
     return localStorage.getItem("theme") || "dracula";
   });
   const [language, SetLanguage] = useState<string>(()=>{
     return localStorage.getItem("Question"+questionNo.toString() +"language") || "java";
   });
-
+  const [lot,_] = useState<number>(()=>{
+    return parseInt(localStorage.getItem('questionNo')!)
+  })
   const runCode = () => {
     if (code !== "") {
       ExecuteCode(code, language, "main." + language);
@@ -37,6 +56,17 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo }) => {
       toast.error("Type something");
     }
   };
+
+  // useEffect(()=>{
+  //     if(Result?.output)
+  //     {
+  //       setCanSubmit(true);
+  //     }
+  //     else
+  //     {
+  //       setCanSubmit(false);
+  //     }
+  // },[Result?.output])
   const themes = [
     { label: "Twilight", value: "twilight" },
     { label: "Clouds", value: "clouds" },
@@ -63,6 +93,28 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo }) => {
   const handleLanguage = (value: string) => {
     SetLanguage(value);
   };
+  const handleSubmit = () =>{
+    if (!Result) return toast.error("Run the Code First")
+    if(Result?.success){
+      let answerKey = "answer"+questionNo as keyof answersType;
+      if(Result?.output === answers[lot][answerKey])
+      {
+        setAnsweredQuestions((prevState) =>({
+          ...prevState,
+          [`answered${questionNo}`]:true
+        }))
+        toast.success("submitted Question " + questionNo)
+      }
+      else
+      {
+        toast.error("output not matched")
+      }
+    }
+    else
+    {
+      toast.warning("Please correct the errors before submitting")
+    }
+  };
   useEffect(()=>{
     const temp = localStorage.getItem("Question"+questionNo.toString() +"language") || "java";
 
@@ -78,10 +130,27 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo }) => {
     const storedCode = localStorage.getItem(questionNo.toString()) || "";
     setCode(storedCode);
   },[questionNo])
+  const messages = [
+    "Well done! You've successfully conquered another coding question!",
+    "Nice work! One more coding puzzle down, keep the momentum going!",
+    "Fantastic! You've completed another step towards victory!",
+    "You're on fire! Another coding challenge solved, just a few more to go!"
+  ];
+  const generateRandom = (val:number):number =>{
+    const temp = Math.floor(Math.random() * val);
+    return temp;
+  }  
   return (
     <div className={`ace-${theme ? theme : "dracula"} relative h-screen p-5 overflow-hidden`}>
       <p className="text-4xl font-bold text-center">CODING CONTEST</p>
-
+      {
+        answeredQuestion[`answered${questionNo}` as keyof answeredType] && (
+          <div className="z-40 absolute inset-0 flex-col flex justify-center items-center bg-black bg-opacity-50 text-white text-3xl font-semibold">
+            <Lottie animationData={successAni} loop={true} className="w-96"/>
+            <p>{messages[generateRandom(messages.length)]}</p>
+          </div>
+        )
+      }
       <div className="flex gap-4 mt-6">
         <DropDown
           options={themes}
@@ -99,6 +168,9 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo }) => {
         />
         <p className="text-center  text-xl font-bold  ">QUESTION: {questionNo}</p>
         <div className="absolute right-10 top-22 flex">
+          <button > 
+            <VscCheck size={30} onClick={handleSubmit}  className={`mr-4 hover:scale-105 active:scale-90`}/>
+          </button>
           <VscSave onClick={handleSave} title="Save" size={30} className="mr-4 cursor-pointer hover:scale-105 active:scale-90" />
           <VscPlay onClick={runCode} title="Run" size={30} className="cursor-pointer hover:scale-105 active:scale-90" />
         </div>
@@ -127,7 +199,10 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo }) => {
           />
         </div>
         <div style={{border:"2px solid",borderRadius:"8px"}} className={` w-full mt-2 h-[30rem] p-2 overflow-y-auto shadow-md shadow-gray-500`}>
-          <p className="text-2xl font-serif font-bold">Output:</p>
+          <div className="flex justify-between">
+            <p className="text-2xl font-serif font-bold">Output:</p>
+            <FaTrash size={22} onClick={clearOutput} className="m-1 cursor-pointer" title="clear output window"/>
+          </div>
           <div className="w-full">
             {
               !Result ? 
@@ -158,7 +233,7 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo }) => {
       </div>
       <div className="flex w-full">
       <div className="flex w-full mt-6">
-        <div className="flex  items-center w-fit z-40  px-5 gap-5" style={{border:"2px solid",borderRadius:"8px"}}>
+        <div className="flex  items-center w-fit z-30  px-5 gap-5" style={{border:"2px solid",borderRadius:"8px"}}>
           <img src="./src/assets/images/3.jpg" className="w-14 rounded-full shadow-sm shadow-black border-2 border-black"></img>
           <div className="flex flex-col items-center">
             <p className="">Organised by</p>
@@ -170,7 +245,7 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo }) => {
       </div>
 
       <div className="flex w-full justify-end mt-6">
-        <div className="flex  items-center w-fit z-40  px-5 gap-5" style={{border:"2px solid",borderRadius:"8px"}}>
+        <div className="flex  items-center w-fit z-30  px-5 gap-5" style={{border:"2px solid",borderRadius:"8px"}}>
           <img src="./src/assets/images/MwLogo.png" className="w-14"></img>
           <div className="flex flex-col items-center">
             <p className="">Developed by</p>

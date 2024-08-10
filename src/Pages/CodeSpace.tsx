@@ -6,7 +6,9 @@ import "../Modules/questions";
 import { questions } from "../Modules/questions";
 import Question from "../Components/Question";
 import { toast, ToastContainer } from "react-toastify";
-import 'react-toastify/ReactToastify.min.css'
+import "react-toastify/ReactToastify.min.css";
+import Lottie from "lottie-react";
+import normalLoading from "../assets/animations/normalLoading.json";
 
 type questionType = {
   question1: string;
@@ -21,32 +23,36 @@ const CodeSpace = () => {
     const temp = localStorage.getItem("theme");
     return temp ? temp : "dracula";
   });
-  const [question, _] = useState<questionType>(() => {
-    const temp = localStorage.getItem("qestionNo");
-    let a: number = Math.floor(Math.random() * 2);
+  const [question, setQuestion] = useState<questionType | null>(null);
+  useEffect(() => {
+    const temp = localStorage.getItem("questionNo");
+
     if (temp) {
-      let b: number = parseInt(temp);
-      return questions[b];
+      // Use the stored question index
+      const b: number = parseInt(temp);
+      setQuestion(questions[b]);
     } else {
+      // Generate a new random number and store it
+      const a: number = Math.floor(Math.random() * questions.length);
       localStorage.setItem("questionNo", a.toString());
-      return questions[a];
+      setQuestion(questions[a]);
     }
-  });
+  }, []);
   const [showSlide, setShowSlide] = useState<boolean>(false);
-  const[currenQuestion,setCurrentQuestion] = useState<number>(1);
-  const handleQuestion = (value:number) =>{
-        setCurrentQuestion(value);
-        setShowSlide(false);
-  }
+  const [currenQuestion, setCurrentQuestion] = useState<number>(1);
+  const handleQuestion = (value: number) => {
+    setCurrentQuestion(value);
+    setShowSlide(false);
+  };
   const handleShowSlide = () => {
     setShowSlide(!showSlide);
   };
   useEffect(() => {
     const checkTheme = () => {
-        const storedTheme = localStorage.getItem('theme') || 'dracula';
-        if (storedTheme !== theme) {
-            setTheme(storedTheme);
-        }
+      const storedTheme = localStorage.getItem("theme") || "dracula";
+      if (storedTheme !== theme) {
+        setTheme(storedTheme);
+      }
     };
 
     // Check theme on mount
@@ -57,38 +63,54 @@ const CodeSpace = () => {
 
     // Cleanup interval on unmount
     return () => clearInterval(interval);
-}, [theme]);
+  }, [theme]);
+
   return (
-    <div className={`ace-${theme} relative w-full`}>
-      <VscArrowRight
-        title="Click to see Questions"
-        size={35}
-        onClick={handleShowSlide}
-        className={`absolute left-0 z-50 top-5   animate-scale cursor-pointer  ${
-          showSlide ? "hidden" : ""
-        }`}
-      />
-      
-      <div
-        className={`absolute z-50 left-0 h-screen overflow-y-auto transform${showSlide ? "translate-x-0" : "hidden -translate-x-full"} text-black border-2 w-96 bg-gray-500 duration-500`}
-        onBlur={handleShowSlide}
-      >
-        <VscArrowLeft
+    <div>
+      { question ? (
+      <div className={`ace-${theme} relative w-full`}>
+        <VscArrowRight
+          title="Click to see Questions"
           size={35}
-          title="Close SlideBar"
           onClick={handleShowSlide}
-          className={`fixed left-80 z-50 top-3 animate-scale cursor-pointer ${
-            showSlide ? "" : "hidden"
+          className={`absolute left-0 z-50 top-5   animate-scale cursor-pointer  ${
+            showSlide ? "hidden" : ""
           }`}
         />
-        <div className={`z-50`}>
-          {Object.entries(question).map(([key, question], index) => (
-            <Question key={key} question={question} questionNo={index + 1} setQuestion={handleQuestion}/>
-          ))}
+
+        <div
+          className={`absolute z-50 left-0 h-screen overflow-y-auto transform${
+            showSlide ? "translate-x-0" : "hidden -translate-x-full"
+          } text-black border-2 w-96 bg-gray-500 duration-500`}
+          onBlur={handleShowSlide}
+        >
+          <VscArrowLeft
+            size={35}
+            title="Close SlideBar"
+            onClick={handleShowSlide}
+            className={`fixed left-80 z-50 top-3 animate-scale cursor-pointer ${
+              showSlide ? "" : "hidden"
+            }`}
+          />
+          <div className={`z-50`}>
+            {Object.entries(question).map(([key, question], index) => (
+              <Question
+                key={key}
+                question={question}
+                questionNo={index + 1}
+                setQuestion={handleQuestion}
+              />
+            ))}
+          </div>
         </div>
-      </div>
-      <Compiler questionNo={currenQuestion}/>
-      <ToastContainer/>
+        <Compiler questionNo={currenQuestion} />
+        <ToastContainer />
+      </div>) :
+      (
+        <div className={`w-full flex justify-center h-screen items-center bg-black`}>
+            <Lottie animationData={normalLoading} loop={true} className="w-44"/>
+        </div>)
+      }    
     </div>
   );
 };
