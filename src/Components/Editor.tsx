@@ -16,6 +16,7 @@ import { FaTrash } from "react-icons/fa";
 import { answers, answersType } from "../Modules/answers";
 import successAni from "../assets/animations/sucess1.json";
 import timerAni from "../assets/animations/timer1.json";
+import { addCodeData } from "../Database/functions/addData";
 
 interface EditorProps {
   ExecuteCode: (code: string, language: string, file: string) => void;
@@ -23,18 +24,49 @@ interface EditorProps {
   questionNo:number;
   clearOutput:() => void;
 }
-type answeredType = {
+export type answeredType = {
   answered1:boolean;
   answered2:boolean;
   answered3:boolean;
   answered4:boolean;
   answered5:boolean;
 }
+
+export type codeData = {
+  question1:{
+    code:string,
+    language:string,
+    output:string,
+  },
+  question2:{
+    code:string,
+    language:string,
+    output:string,
+  }
+  question3:{
+    code:string,
+    language:string,
+    output:string,
+  }
+  question4:{
+    code:string,
+    language:string,
+    output:string,
+  }
+  question5:{
+    code:string,
+    language:string,
+    output:string,
+  }
+  fullData:answeredType,
+  timeLeft: string
+}
 const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOutput }) => {
   const [code, setCode] = useState<string>(()=>{
     return localStorage.getItem(questionNo.toString()) || "";
   });
   const [timerRunning,setTimerRunning] = useState<boolean>(true);
+  const [gameOver,setGameOver] = useState<boolean>(false);
   const [timer,setTimer] = useState<number>(()=>{
     const temp = localStorage.getItem("timer")
     if(temp){
@@ -76,8 +108,18 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
     return `${minutes}m ${remainingSeconds}s`;
   };
 
+  const getScore = ():number =>{
+    let a:number = 0;
+     Object.entries(answeredQuestion).map(([_,val])=>{
+       if(val)
+       {
+          a++;
+       }
+     })
+     return a;
+  }
   useEffect(()=>{
-    if(!timerRunning) return
+    if(!timerRunning && gameOver) return
       const handleTimer = setInterval(()=>{
           setTimer((preValue)=> preValue -1);
           localStorage.setItem("timer",timer.toString())
@@ -88,10 +130,19 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
       {
         setTimer(0);
         setTimerRunning(false);
+        setGameOver(true);
         localStorage.setItem("timer","0");
       }
+
+      if(getScore() === 5)
+      {
+          setTimerRunning(false);
+          setGameOver(true);
+      }
+      
       return() => clearInterval(handleTimer)      
   },[timer,timerRunning])
+  
 
   // useEffect(()=>{
   //     if(Result?.output)
@@ -135,11 +186,44 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
       let answerKey = "answer"+questionNo as keyof answersType;
       if(Result?.output === answers[lot][answerKey])
       {
-        setAnsweredQuestions((prevState) =>({
-          ...prevState,
+        const updatedData:answeredType = {
+          ...answeredQuestion,
           [`answered${questionNo}`]:true
-        }))
-        toast.success("submitted Question " + questionNo)
+        }
+        save();
+        setAnsweredQuestions(updatedData);
+        const temp:codeData = {
+          question1:{
+            code: localStorage.getItem("1") || "",
+            language:localStorage.getItem("Question1language")|| "java",
+            output:localStorage.getItem("Question1output") || ""
+          },
+          question2:{
+            code: localStorage.getItem("2") || "",
+            language:localStorage.getItem("Question2language")|| "java",
+            output:localStorage.getItem("Question2output") || ""
+          },
+          question3:{
+            code: localStorage.getItem("3") || "",
+            language:localStorage.getItem("Question3language")|| "java",
+            output:localStorage.getItem("Question3output") || ""
+          },
+          question4:{
+            code: localStorage.getItem("4") || "",
+            language:localStorage.getItem("Question4language")|| "java",
+            output:localStorage.getItem("Question4output") || ""
+          },
+          question5:{
+            code: localStorage.getItem("5") || "",
+            language:localStorage.getItem("Question5language")|| "java",
+            output:localStorage.getItem("Question5output") || ""
+          },
+          fullData:updatedData,
+          timeLeft:formatTime(timer)
+        }
+
+        addCodeData(temp);
+        toast.success("submitted successfully")
       }
       else
       {
@@ -160,10 +244,16 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
 
     SetLanguage(temp);
   },[questionNo])
-  const handleSave = ()=>{
+  useEffect(()=>{
+      localStorage.setItem("Question"+questionNo+"output",Result?.output!);
+  },[Result])
+  const save = ()=>{
     if(code === "") {toast.error("Please Type Program Before Saving"); return} 
     localStorage.setItem(questionNo.toString(),code);
     localStorage.setItem("Question"+questionNo.toString() +"language",language);
+  }
+  const handleSave = ()=>{
+    save();
     toast.success("Saved Successfully");
   }
   useEffect(()=>{
@@ -208,9 +298,10 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
           condition={"Language"}
         />
         <p className="text-center  text-xl font-bold  ">QUESTION: {questionNo}</p>
-        <div className="flex absolute right-40 mr-10 top-16 justify-center items-center">
-          <Lottie animationData={timerAni} loop={true} className="w-20"/>
-          <p>{formatTime(timer)}</p>
+        <div style={{border:"2px solid",borderRadius:"8px"}} 
+        className="flex absolute bg-blue-500 h-12 shadow-md shadow-gray-500  w-32 right-52 mr-10 top-20 justify-center items-center">
+          <Lottie animationData={timerAni} loop={timerRunning} className="w-20 -ml-6"/>
+          <p className="text-xl font-mono font-bold">{formatTime(timer)}</p>
         </div>
         <div className="absolute right-10 top-22 flex">
           <button > 

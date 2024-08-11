@@ -5,7 +5,7 @@ import { VscArrowLeft, VscArrowRight } from "react-icons/vsc";
 import "../Modules/questions";
 import { questions } from "../Modules/questions";
 import Question from "../Components/Question";
-import { toast, ToastContainer } from "react-toastify";
+import {  ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.min.css";
 import Lottie from "lottie-react";
 import normalLoading from "../assets/animations/normalLoading.json";

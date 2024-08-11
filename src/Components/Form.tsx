@@ -1,18 +1,18 @@
 import Lottie from "lottie-react";
 import React, { useState } from "react";
 import formAni from "../assets/animations/form.json";
+import { addData } from "../Database/functions/addData";
+import { toast, ToastContainer } from "react-toastify";
 
-interface FormData {
+export interface FormData {
   name: string;
   rollNumber: string;
   className: string;
   email: string;
 }
 
-interface FromProps {
-  onSubmit?: (formData: FormData) => void;
-}
-const Form: React.FC<FromProps> = ({ onSubmit }) => {
+
+const Form = () => {
   const [formData, setFormData] = useState<FormData>({
     name: "",
     rollNumber: "",
@@ -28,21 +28,14 @@ const Form: React.FC<FromProps> = ({ onSubmit }) => {
     e.preventDefault();
 
     try {
-      //   const response = await axios.post('/.netlify/functions/submitFormData', formData);
-      //   console.log(response.data);
-      //   if (response.data.success) {
-      if (!onSubmit) return;
-      onSubmit(formData);
-      //     // Clear form data after submission
+      addData(formData);
       setFormData({
         name: "",
         rollNumber: "",
         className: "",
         email: "",
       });
-      //   } else {
-      //     console.error(response.data.message);
-      //   }
+      toast.success("form Submitted");
       localStorage.setItem("userData", JSON.stringify(formData));
     } catch (error) {
       console.error("Failed to submit form data:", error);
@@ -128,6 +121,7 @@ const Form: React.FC<FromProps> = ({ onSubmit }) => {
           Submit
         </button>
       </form>
+      <ToastContainer/>
     </div>
   );
 };
