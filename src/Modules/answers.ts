@@ -21,7 +21,7 @@ export const answers: answersType[] = [
         answer5:"Trapping Rain Water: Given n non-negative integers representing an elevation map where the width of each bar is 1, compute how much water it can trap after raining."
     },
     {
-        answer1:"Coin Change: You are given coins of different denominations and a total amount of money. Write a function to compute the minimum number of coins needed to make up that amount.",
+        answer1:"Munees/n",
         answer2:"Maximum Product of Three Numbers: Given an integer array nums, find three numbers whose product is maximum and return the maximum product.",
         answer3:"Longest Palindromic Substring: Given a string s, find the longest palindromic substring in s.",
         answer4:"Valid Sudoku: Determine if a 9x9 Sudoku board is valid. Only the filled cells need to be validated according to the following rules: Each row must contain the digits 1-9 without repetition, each column must contain the digits 1-9 without repetition, and each of the nine 3x3 sub-boxes of the grid must contain the digits 1-9 without repetition.",

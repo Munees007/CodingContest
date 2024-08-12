@@ -73,7 +73,7 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
       return parseInt(temp)
     } 
     else{
-      localStorage.setItem("timer",(1*10).toString());
+      localStorage.setItem("timer",(1*60).toString());
       return 1*10; // time in seconds 
     }
   })
