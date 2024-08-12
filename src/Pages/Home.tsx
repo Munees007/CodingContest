@@ -5,6 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { BiSolidLeftArrow, BiSolidRightArrow } from "react-icons/bi";
 import Form from "../Components/Form";
 import Credits from "../Components/Credit";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/ReactToastify.min.css";
 
 const Home = () =>{
     const [currentImg, setCurrentImg] = useState<string>("Bg1");
@@ -19,13 +21,18 @@ const Home = () =>{
       setCurrentImg(backGround[nextIndex]);
   };
     const handleChangeRoute = () =>{
+      const temp = localStorage.getItem("formSubmitted");
+      if(!temp)
+        {
+          navigate('/');
+        }
       navigate('/codespace');
     }
     return (
-      <div className="relative w-full h-screen">
+      <div className={`relative w-full h-screen `}>
         <img src={`./src/assets/images/${currentImg}.jpg`} className="w-full h-full"></img>
         {backGround.indexOf(currentImg) === 1 && (
-          <div className="absolute bg-black/60 inset-0 flex items-center justify-center">
+          <div className={`absolute bg-black/60 inset-0 flex items-center justify-center `}>
             <Form/>
           </div>
         )}
@@ -52,6 +59,7 @@ const Home = () =>{
         </div>
         <img src="./src/assets/images/btn.png" title="Start" onClick={handleChangeRoute} className="absolute bottom-5 right-8 w-32 hover:scale-110 cursor-pointer active:scale-90"></img>
         <MatrixEffect/>
+        <ToastContainer/>
       </div>
     );
 }
