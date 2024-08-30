@@ -28,8 +28,12 @@ export default function Profile() {
             <p>{state.formData.rollNumber}</p>
             <p>{state.formData.name}</p>
             <p>{state.formData.email}</p>
-            <p>{getScore(state.codeData.fullData)}</p>
-            <p>{state.codeData.timeLeft}</p>
+            {
+              state.codeData ? <><p>{getScore(state.codeData.fullData)}</p>
+            <p>{state.codeData.timeLeft}</p></>:<><p>-</p>
+            <p>0m 0s</p></>
+            }
+            
         </div>
         <div className='whitespace-pre grid mt-5 grid-cols-3 gap-3'>
             {/* {
@@ -46,6 +50,7 @@ export default function Profile() {
             </div>
             } */}
             {
+              state.codeData ?
           Object.entries(state.codeData).map(([key, value]) => {
             // Use type guard to check if value is CodeData
             if (isCodeData(value)) {
@@ -65,7 +70,8 @@ export default function Profile() {
               );
             }
             return null; // Handle cases where value does not match CodeData
-          })
+          }): <div className='w-full absolute'>
+          <p className='text-center'>No Data Found</p></div>
         }
             
             

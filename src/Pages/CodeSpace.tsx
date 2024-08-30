@@ -82,7 +82,6 @@ const CodeSpace = () => {
           className={`absolute z-50 left-0 h-screen overflow-y-auto transform${
             showSlide ? "translate-x-0" : "hidden -translate-x-full"
           } text-black border-2 w-96 bg-gray-500 duration-500`}
-          onBlur={handleShowSlide}
         >
           <VscArrowLeft
             size={35}

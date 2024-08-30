@@ -31,31 +31,39 @@ const Admin = () =>{
          return a;
       }
     return(
-        <div className="w-full bg-blue-300 h-screen p-3 overflow-auto">
-            <div  className="bg-blue-600 border-2 border-black rounded-md
-                    shadow-md shadow-black w-full text-white flex justify-around mt-2 py-2">
-                        <p>S.NO</p>
-                        <p>Roll NO</p>
-                        <p>Name</p>
-                        <p>Email</p>
-                        <p>Score</p>
-                        <p>Time Left</p>
-            </div>
+        <div className="p-6 bg-[#2c2a4a] h-screen overflow-hidden">
+        <table className="w-full overflow-auto text-white">
+            <tr  className="w-full p-2 bg-[#4f518c] text-left border-2 border-[#dabfff] grid grid-cols-6 rounded-sm ">
+                        <th>S.NO</th>
+                        <th>Roll NO</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Score</th>
+                        <th>Time Left</th>
+            </tr>
             {
                 userData && userData.map((value,index)=>(
                     <Link to={`/profile/${value.formData.name}`} state={value}>
-                    <div key={index} className="bg-blue-600 border-2 border-black rounded-md
-                    shadow-md cursor-pointer shadow-black w-full text-white flex justify-around mt-2 py-2">
-                        <p>{index+1}.</p>
-                        <p>{value.formData.rollNumber}</p>
-                        <p>{value.formData.name}</p>
-                        <p>{value.formData.email}</p>
-                        <p>{getScore(value.codeData.fullData)}</p>
-                        <p>{value.codeData.timeLeft}</p>
-                    </div>
+                    <tr key={index} className="w-full p-2 bg-[#907ad6] border border-[#dabfff] grid grid-cols-6 rounded-sm justify-between">
+                        <td>{index+1}.</td>
+                        <td>{value.formData.rollNumber}</td>
+                        <td>{value.formData.name}</td>
+                        <td>{value.formData.email}</td>
+                        {
+                            value.codeData ? <>
+                                <td>{getScore(value.codeData.fullData)}</td>
+                                <td>{value.codeData.timeLeft}</td>
+                                </> : <>
+                                <td>-</td>
+                                <td>0m 0s</td>
+                                </>
+                        }
+                        
+                    </tr>
                     </Link>
                 ))
             }
+        </table>
         </div>
     )
 }
