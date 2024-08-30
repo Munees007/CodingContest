@@ -19,7 +19,11 @@ const Form = () => {
     className: "",
     email: "",
   });
+  const [formSubmitted,setFormSubmitted] = useState<boolean>(()=>{
+    const temp = localStorage.getItem("formSubmitted");
 
+    return temp ? Boolean(temp) : false;
+  })
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -36,6 +40,7 @@ const Form = () => {
         email: "",
       });
       toast.success("form Submitted");
+      localStorage.setItem("formSubmitted","true");
       localStorage.setItem("userData", JSON.stringify(formData));
     } catch (error) {
       console.error("Failed to submit form data:", error);
@@ -116,7 +121,7 @@ const Form = () => {
         </div>
         <button
           type="submit"
-          className="bg-blue-500 hover:bg-blue-700 mt-2 text-white px-4 py-2 rounded-lg"
+          className={`bg-blue-500 hover:bg-blue-700 mt-2 text-white px-4 py-2 rounded-lg ${formSubmitted ? "pointer-events-none bg-gray-600" : "pointer-events-auto"}`}
         >
           Submit
         </button>

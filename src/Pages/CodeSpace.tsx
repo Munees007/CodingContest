@@ -9,6 +9,7 @@ import {  ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.min.css";
 import Lottie from "lottie-react";
 import normalLoading from "../assets/animations/normalLoading.json";
+import { useNavigate } from "react-router-dom";
 
 type questionType = {
   question1: string;
@@ -18,7 +19,15 @@ type questionType = {
   question5: string;
 };
 
-const CodeSpace = () => {
+  const CodeSpace = () =>{
+    const navigate = useNavigate();
+  useEffect(()=>{
+      const temp = localStorage.getItem("formSubmitted");
+      if(!temp)
+      {
+          navigate('/');
+      }
+  },[])
   const [theme, setTheme] = useState<string>(() => {
     const temp = localStorage.getItem("theme");
     return temp ? temp : "dracula";

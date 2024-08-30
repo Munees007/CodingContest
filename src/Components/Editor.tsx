@@ -17,6 +17,7 @@ import { answers, answersType } from "../Modules/answers";
 import successAni from "../assets/animations/sucess1.json";
 import timerAni from "../assets/animations/timer1.json";
 import { addCodeData } from "../Database/functions/addData";
+import { useNavigate } from "react-router-dom";
 
 interface EditorProps {
   ExecuteCode: (code: string, language: string, file: string) => void;
@@ -65,6 +66,7 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
   const [code, setCode] = useState<string>(()=>{
     return localStorage.getItem(questionNo.toString()) || "";
   });
+  const navigate = useNavigate();
   const [timerRunning,setTimerRunning] = useState<boolean>(true);
   const [gameOver,setGameOver] = useState<boolean>(false);
   const [timer,setTimer] = useState<number>(()=>{
@@ -73,8 +75,8 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
       return parseInt(temp)
     } 
     else{
-      localStorage.setItem("timer",(1*10).toString());
-      return 1*10; // time in seconds 
+      localStorage.setItem("timer",(10*60).toString());
+      return 10*60; // time in seconds 
     }
   })
   const [answeredQuestion,setAnsweredQuestions] = useState<answeredType>(()=>{
@@ -132,12 +134,14 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
         setTimerRunning(false);
         setGameOver(true);
         localStorage.setItem("timer","0");
+        navigate('/dw')
       }
 
       if(getScore() === 5)
       {
           setTimerRunning(false);
           setGameOver(true);
+          navigate('/dw')
       }
       
       return() => clearInterval(handleTimer)      
