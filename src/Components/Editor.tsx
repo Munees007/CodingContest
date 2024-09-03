@@ -69,6 +69,15 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
   const navigate = useNavigate();
   const [timerRunning,setTimerRunning] = useState<boolean>(true);
   const [gameOver,setGameOver] = useState<boolean>(false);
+
+  useEffect(()=>{
+      const temp = localStorage.getItem("gameOver") || "false";
+      const timer = localStorage.getItem("timer") || "60";
+      if(temp !== "false" || timer === "0")
+      {
+        navigate('/thankYou')
+      }
+  },[])
   const [timer,setTimer] = useState<number>(()=>{
     const temp = localStorage.getItem("timer")
     if(temp){
@@ -134,14 +143,16 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
         setTimerRunning(false);
         setGameOver(true);
         localStorage.setItem("timer","0");
-        navigate('/dw')
+        localStorage.setItem("gameOver","true");
+        navigate('/thankYou')
       }
 
       if(getScore() === 5)
       {
           setTimerRunning(false);
           setGameOver(true);
-          navigate('/dw')
+          localStorage.setItem("gameOver","true");
+          navigate('/thankYou')
       }
       
       return() => clearInterval(handleTimer)      

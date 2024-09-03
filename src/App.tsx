@@ -6,6 +6,7 @@ import {BrowserRouter as Router,Routes,Route} from 'react-router-dom'
 import CodeSpace from './Pages/CodeSpace'
 import Admin from './Pages/Admin'
 import Profile from './Components/Profile'
+import ThankYou from './Pages/ThankYou'
 
 function App() {
   useEffect(()=>{
@@ -28,6 +29,7 @@ function App() {
             <Route path='/codespace' element={<CodeSpace/>}></Route>
             <Route path="/dw" element={<Admin/>}/>
             <Route path='/profile/:userName' element={<Profile/>}/>
+            <Route path='/thankYou' element={<ThankYou/>}/>
         </Routes>
       </Router>6
     </div>
