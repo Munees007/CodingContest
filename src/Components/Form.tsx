@@ -49,11 +49,12 @@ const Form = () => {
 
   return (
     <div className="">
-      <Lottie animationData={formAni} loop className="w-32 absolute top-16 -rotate-12 left-80"/>
+      
       <form
         onSubmit={handleSubmit}
-        className="bg-white flex flex-col w-[40rem] p-8 rounded-lg shadow-lg"
+        className="bg-white flex flex-col relative w-[40rem] p-8 rounded-lg shadow-lg"
       >
+        <Lottie animationData={formAni} loop className="w-32 absolute -top-12 -left-10 -rotate-12 "/>
         <h2 className="text-2xl text-center font-semibold mb-4">
           Registeration
         </h2>
