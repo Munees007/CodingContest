@@ -1,7 +1,7 @@
 import AceEditor from "react-ace";
 import "../Modules/language";
 import "../Modules/themes";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import DropDown from "./DropDown";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/ReactToastify.min.css'
@@ -18,6 +18,7 @@ import successAni from "../assets/animations/sucess1.json";
 import timerAni from "../assets/animations/timer1.json";
 import { addCodeData } from "../Database/functions/addData";
 import { useNavigate } from "react-router-dom";
+import { CodeObject, defaultCode } from "../Modules/questions";
 
 interface EditorProps {
   ExecuteCode: (code: string, language: string, file: string) => void;
@@ -63,9 +64,21 @@ export type codeData = {
   timeLeft: string
 }
 const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOutput }) => {
+
+
+  const getCurrentDefaultCode = ():string =>{
+    const currentLot:number = parseInt(localStorage.getItem("questionNo")!)
+    const CurrentQuestion = defaultCode[currentLot];
+    const questionKey: keyof CodeObject = `question${questionNo}` as keyof CodeObject;
+    const defaultQuestionCode = CurrentQuestion?.[questionKey];
+
+    return defaultQuestionCode || "";
+  }
   const [code, setCode] = useState<string>(()=>{
-    return localStorage.getItem(questionNo.toString()) || "";
+    
+    return localStorage.getItem(questionNo.toString()) || getCurrentDefaultCode();
   });
+  const editorRef = useRef<AceEditor|null>(null);
   const navigate = useNavigate();
   const [timerRunning,setTimerRunning] = useState<boolean>(true);
   const [gameOver,setGameOver] = useState<boolean>(false);
@@ -78,14 +91,15 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
         navigate('/thankYou')
       }
   },[])
+  
   const [timer,setTimer] = useState<number>(()=>{
     const temp = localStorage.getItem("timer")
     if(temp){
       return parseInt(temp)
     } 
     else{
-      localStorage.setItem("timer",(10*60).toString());
-      return 10*60; // time in seconds 
+      localStorage.setItem("timer",(60*60).toString());
+      return 60*60; // time in seconds 
     }
   })
   const [answeredQuestion,setAnsweredQuestions] = useState<answeredType>(()=>{
@@ -272,7 +286,7 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
     toast.success("Saved Successfully");
   }
   useEffect(()=>{
-    const storedCode = localStorage.getItem(questionNo.toString()) || "";
+    const storedCode = localStorage.getItem(questionNo.toString()) || getCurrentDefaultCode();
     setCode(storedCode);
   },[questionNo])
   const messages = [
@@ -285,6 +299,23 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
     const temp = Math.floor(Math.random() * val);
     return temp;
   }  
+  const handleChange = ( e:string) =>{
+
+    if(editorRef.current === null) return
+    const editor = editorRef.current.editor;
+    const cursorPosition = editor.getCursorPosition();
+
+    // Prevent modifying the first 10 lines
+    if (cursorPosition.row >= 6 ) {
+      
+      setCode(e); // Update the code normally if editing is after the first 10 lines
+    } else {
+      // Prevent editing the custom lines
+      editor.setValue(code, -1); // Reset to the previous code to revert changes in protected lines
+    }
+    //setCode(e)
+  }
+  
   
   return (
     <div className={`ace-${theme ? theme : "dracula"} relative h-screen p-5 overflow-hidden`}>
@@ -314,7 +345,7 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
         />
         <p className="text-center  text-xl font-bold  ">QUESTION: {questionNo}</p>
         <div style={{border:"2px solid",borderRadius:"8px"}} 
-        className="flex absolute bg-blue-500 h-12 shadow-md shadow-gray-500  w-32 right-52 mr-10 top-20 justify-center items-center">
+        className="flex absolute bg-blue-500 h-12 shadow-md shadow-gray-500  w-fit p-2 right-52 mr-10 top-20 justify-center items-center">
           <Lottie animationData={timerAni} loop={timerRunning} className="w-20 -ml-6"/>
           <p className="text-xl font-mono font-bold">{formatTime(timer)}</p>
         </div>
@@ -345,8 +376,9 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
             value={code}
             onChange={(e) => {
               language ?
-                setCode(e) : toast.warning("Please Choose the language")
+                handleChange(e) : toast.warning("Please Choose the language")
             }}
+            ref={editorRef}
           />
         </div>
         <div style={{border:"2px solid",borderRadius:"8px"}} className={` w-full mt-2 h-[30rem] p-2 overflow-y-auto shadow-md shadow-gray-500`}>

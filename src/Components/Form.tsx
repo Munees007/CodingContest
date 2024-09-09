@@ -19,7 +19,7 @@ const Form = () => {
     className: "",
     email: "",
   });
-  const [formSubmitted,setFormSubmitted] = useState<boolean>(()=>{
+  const [formSubmitted,_] = useState<boolean>(()=>{
     const temp = localStorage.getItem("formSubmitted");
 
     return temp ? Boolean(temp) : false;

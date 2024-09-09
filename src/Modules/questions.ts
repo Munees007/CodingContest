@@ -21,3 +21,34 @@ export const questions = [
         question5:"Valid Sudoku: Determine if a 9x9 Sudoku board is valid. Only the filled cells need to be validated according to the following rules: Each row must contain the digits 1-9 without repetition, each column must contain the digits 1-9 without repetition, and each of the nine 3x3 sub-boxes of the grid must contain the digits 1-9 without repetition."
     }
 ];
+
+export interface CodeObject{
+    question1:string,
+    question2:string,
+    question3:string,
+    question4:string,
+    question5:string,
+}
+export const defaultCode = [
+    {
+        question1:"#include<iostream>\n\nint main()\n{\n\n}\n",
+        question2:"#include<iostream>\n\nint main()\n{\n\n}\n",
+        question3:"#include<iostream>\n\nint main()\n{\n\n}\n",
+        question4:"#include<iostream>\n\nint main()\n{\n\n}\n",
+        question5:"#include<iostream>\n\nint main()\n{\n\n}\n",
+    },
+    {
+        question1:"#include<iostream>\n\nint main()\n{\n\n}\n",
+        question2:"#include<iostream>\n\nint main()\n{\n\n}\n",
+        question3:"#include<iostream>\n\nint main()\n{\n\n}\n",
+        question4:"#include<iostream>\n\nint main()\n{\n\n}\n",
+        question5:"#include<iostream>\n\nint main()\n{\n\n}\n",
+    },
+    {
+        question1:"#include<iostream>\n\nint main()\n{\n\n}\n",
+        question2:"#include<iostream>\n\nint main()\n{\n\n}\n",
+        question3:"#include<iostream>\n\nint main()\n{\n\n}\n",
+        question4:"#include<iostream>\n\nint main()\n{\n\n}\n",
+        question5:"#include<iostream>\n\nint main()\n{\n\n}\n",
+    }
+]
