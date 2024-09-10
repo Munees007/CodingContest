@@ -1,6 +1,7 @@
+import '../Modules/themes'
 const ThankYou = ()=>{
     return(
-        <div>
+        <div className="ace-dracula w-full h-screen">
             <p>Thank You</p>
         </div>
     )
