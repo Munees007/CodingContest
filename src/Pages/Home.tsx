@@ -7,6 +7,7 @@ import Form from "../Components/Form";
 import Credits from "../Components/Credit";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.min.css";
+import { getFlag } from "../Database/functions/addData";
 
 const Home = () =>{
     const [currentImg, setCurrentImg] = useState<string>("Bg1");
@@ -20,14 +21,26 @@ const Home = () =>{
       const nextIndex = direction === "next" ? (currentIndex + 1) % backGround.length : (currentIndex - 1 + backGround.length) % backGround.length;
       setCurrentImg(backGround[nextIndex]);
   };
-    const handleChangeRoute = () =>{
+    const handleChangeRoute = async () =>{
       const temp = localStorage.getItem("formSubmitted");
       if(!temp)
         {
           navigate('/');
         }
-      navigate('/codespace');
+        else{
+           const flag = await getFlag();
+
+           if(flag === true)
+           {
+              navigate('/codespace')
+           }
+        }
     }
+    useEffect(()=>{
+      setInterval(()=>{
+          handleChangeRoute();
+      },3000)
+    })
     return (
       <div className={`relative w-full h-screen `}>
         <img src={`./src/assets/images/${currentImg}.jpg`} className="w-full h-full"></img>
@@ -57,7 +70,7 @@ const Home = () =>{
             <BiSolidRightArrow />
           </button>
         </div>
-        <img src="./src/assets/images/btn.png" title="Start" onClick={handleChangeRoute} className="absolute bottom-5 right-8 w-32 hover:scale-110 cursor-pointer active:scale-90"></img>
+        {/* <img src="./src/assets/images/btn.png" title="Start" onClick={handleChangeRoute} className="absolute bottom-5 right-8 w-32 hover:scale-110 cursor-pointer active:scale-90"></img> */}
         <MatrixEffect/>
         <ToastContainer/>
       </div>

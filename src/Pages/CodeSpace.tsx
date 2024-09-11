@@ -11,13 +11,29 @@ import Lottie from "lottie-react";
 import normalLoading from "../assets/animations/normalLoading.json";
 import { useNavigate } from "react-router-dom";
 import { MdDoubleArrow } from "react-icons/md";
-import { CgClose } from "react-icons/cg";
+import FullQuestion from "../Components/FullQuestion";
 
-type questionType = {
-  question1: string;
-  question2: string;
-  question3: string;
+type example = {
+  input:string,
+  output:string
+}
+type content = {
+    problem:string,
+    input: string,
+    output:string,
+    example1:example,
+    example2:example
+}
+export type question = {
+  title:string,
+  content:content
+}
+export type questionType = {
+  question1: question;
+  question2: question;
+  question3: question;
 };
+
 
   const CodeSpace = () =>{
     const navigate = useNavigate();
@@ -50,9 +66,9 @@ type questionType = {
   }, []);
   const [showSlide, setShowSlide] = useState<boolean>(false);
   const [currenQuestion, setCurrentQuestion] = useState<number>(1);
-  const handleQuestion = (value: number) => {
+  const handleQuestion = (value: number,status:boolean) => {
     setCurrentQuestion(value);
-    setShowSlide(false);
+    setShowSlide(status);
   };
   const handleShowSlide = () => {
     setShowSlide(!showSlide);
@@ -117,21 +133,13 @@ type questionType = {
                 questionNo={index + 1}
                 setQuestion={handleQuestion}
                 theme={theme}
+                setShowQuestion={setShowQuestion}
               />
             ))}
           </div>
         </div>
         <Compiler questionNo={currenQuestion} />
-       { showQuestion && <div className="w-full absolute items-center top-0 h-screen flex justify-center">
-          <div className={`w-[40rem] ace-${theme} border-2 rounded-md h-[35rem]`}>
-              <div className="w-full justify-end flex pr-3 pt-3 "><CgClose size={30} className="cursor-pointer" onClick={()=>{setShowQuestion(false)}}/></div>
-              <div>
-                 {
-                  getCurrentQuestion()
-                }
-              </div>
-          </div>
-        </div>
+       { showQuestion && <FullQuestion theme={theme} getCurrentQuestion={getCurrentQuestion} setShowQuestion={setShowQuestion}/>
       }
         <div className="absolute bottom-0 flex justify-center w-full">
           <span onClick={()=>{setShowQuestion(true)}} className={`-rotate-90 ${showQuestion ? "hidden" : ""}`}>

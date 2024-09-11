@@ -59,3 +59,31 @@ export async function getData(){
         console.log(error);
     }
 }
+
+export async function setFlag(val:boolean){
+    try {
+        const userRef = ref(db,'flag');
+        await set(userRef,val);
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+export async function getFlag():Promise<boolean>{
+    try {
+        const userRef = ref(db,'flag');
+
+        const userSnapShot = await get(userRef);
+
+        if(userSnapShot.exists())
+        {
+            return userSnapShot.val()
+        }
+        else{
+            throw new Error('no flag found');
+        }
+    } catch (error) {
+        console.log(error)
+        throw error
+    }
+}
