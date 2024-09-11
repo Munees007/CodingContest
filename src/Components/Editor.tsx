@@ -1,7 +1,7 @@
 import AceEditor from "react-ace";
 import "../Modules/language";
 import "../Modules/themes";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect,useState } from "react";
 import DropDown from "./DropDown";
 import { toast, ToastContainer } from "react-toastify";
 import 'react-toastify/ReactToastify.min.css'
@@ -18,7 +18,6 @@ import successAni from "../assets/animations/sucess1.json";
 import timerAni from "../assets/animations/timer1.json";
 import { addCodeData } from "../Database/functions/addData";
 import { useNavigate } from "react-router-dom";
-import { CodeObject, defaultCode } from "../Modules/questions";
 
 interface EditorProps {
   ExecuteCode: (code: string, language: string, file: string) => void;
@@ -30,8 +29,6 @@ export type answeredType = {
   answered1:boolean;
   answered2:boolean;
   answered3:boolean;
-  answered4:boolean;
-  answered5:boolean;
 }
 
 export type codeData = {
@@ -50,35 +47,15 @@ export type codeData = {
     language:string,
     output:string,
   }
-  question4:{
-    code:string,
-    language:string,
-    output:string,
-  }
-  question5:{
-    code:string,
-    language:string,
-    output:string,
-  }
   fullData:answeredType,
   timeLeft: string
 }
 const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOutput }) => {
 
-
-  const getCurrentDefaultCode = ():string =>{
-    const currentLot:number = parseInt(localStorage.getItem("questionNo")!)
-    const CurrentQuestion = defaultCode[currentLot];
-    const questionKey: keyof CodeObject = `question${questionNo}` as keyof CodeObject;
-    const defaultQuestionCode = CurrentQuestion?.[questionKey];
-
-    return defaultQuestionCode || "";
-  }
   const [code, setCode] = useState<string>(()=>{
     
-    return localStorage.getItem(questionNo.toString()) || getCurrentDefaultCode();
+    return localStorage.getItem(questionNo.toString()) || "";
   });
-  const editorRef = useRef<AceEditor|null>(null);
   const navigate = useNavigate();
   const [timerRunning,setTimerRunning] = useState<boolean>(true);
   const [gameOver,setGameOver] = useState<boolean>(false);
@@ -106,9 +83,7 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
     const storedData = localStorage.getItem("answeredData");
     return  storedData ? JSON.parse(storedData) : {answered1:false,
     answered2:false,
-    answered3:false,
-    answered4:false,
-    answered5:false
+    answered3:false
   }});
   //const [canSubmit,setCanSubmit] = useState<boolean>(false);
   const [theme, SetTheme] = useState<string>(()=>{
@@ -237,16 +212,6 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
             language:localStorage.getItem("Question3language")|| "java",
             output:localStorage.getItem("Question3output") || ""
           },
-          question4:{
-            code: localStorage.getItem("4") || "",
-            language:localStorage.getItem("Question4language")|| "java",
-            output:localStorage.getItem("Question4output") || ""
-          },
-          question5:{
-            code: localStorage.getItem("5") || "",
-            language:localStorage.getItem("Question5language")|| "java",
-            output:localStorage.getItem("Question5output") || ""
-          },
           fullData:updatedData,
           timeLeft:formatTime(timer)
         }
@@ -286,7 +251,7 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
     toast.success("Saved Successfully");
   }
   useEffect(()=>{
-    const storedCode = localStorage.getItem(questionNo.toString()) || getCurrentDefaultCode();
+    const storedCode = localStorage.getItem(questionNo.toString()) || "";
     setCode(storedCode);
   },[questionNo])
   const messages = [
@@ -299,24 +264,6 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
     const temp = Math.floor(Math.random() * val);
     return temp;
   }  
-  const handleChange = ( e:string) =>{
-
-    if(editorRef.current === null) return
-    const editor = editorRef.current.editor;
-    const cursorPosition = editor.getCursorPosition();
-
-    // Prevent modifying the first 10 lines
-    if (cursorPosition.row >= 6 ) {
-      
-      setCode(e); // Update the code normally if editing is after the first 10 lines
-    } else {
-      // Prevent editing the custom lines
-      editor.setValue(code, -1); // Reset to the previous code to revert changes in protected lines
-    }
-    //setCode(e)
-  }
-  
-  
   return (
     <div className={`ace-${theme ? theme : "dracula"} relative h-screen p-5 overflow-hidden`}>
       <p className="text-4xl font-bold text-center">CODING CONTEST</p>
@@ -376,9 +323,8 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
             value={code}
             onChange={(e) => {
               language ?
-                handleChange(e) : toast.warning("Please Choose the language")
+               setCode(e) : toast.warning("Please Choose the language")
             }}
-            ref={editorRef}
           />
         </div>
         <div style={{border:"2px solid",borderRadius:"8px"}} className={` w-full mt-2 h-[30rem] p-2 overflow-y-auto shadow-md shadow-gray-500`}>

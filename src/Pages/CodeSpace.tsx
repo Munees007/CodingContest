@@ -10,13 +10,13 @@ import "react-toastify/ReactToastify.min.css";
 import Lottie from "lottie-react";
 import normalLoading from "../assets/animations/normalLoading.json";
 import { useNavigate } from "react-router-dom";
+import { MdDoubleArrow } from "react-icons/md";
+import { CgClose } from "react-icons/cg";
 
 type questionType = {
   question1: string;
   question2: string;
   question3: string;
-  question4: string;
-  question5: string;
 };
 
   const CodeSpace = () =>{
@@ -32,6 +32,7 @@ type questionType = {
     const temp = localStorage.getItem("theme");
     return temp ? temp : "dracula";
   });
+  const [showQuestion,setShowQuestion] = useState<boolean>(false);
   const [question, setQuestion] = useState<questionType | null>(null);
   useEffect(() => {
     const temp = localStorage.getItem("questionNo");
@@ -74,6 +75,12 @@ type questionType = {
     return () => clearInterval(interval);
   }, [theme]);
 
+  const getCurrentQuestion = ()=>{
+    const questionKey: keyof questionType = `question${currenQuestion}` as keyof questionType;
+
+    return question?.[questionKey];
+  }
+
   return (
     <div>
       { question ? (
@@ -82,7 +89,7 @@ type questionType = {
           title="Click to see Questions"
           size={35}
           onClick={handleShowSlide}
-          className={`absolute left-0 z-50 top-5   animate-scale cursor-pointer  ${
+          className={`absolute left-0 z-50 top-5 ace-${theme}   animate-scale cursor-pointer  ${
             showSlide ? "hidden" : ""
           }`}
         />
@@ -90,16 +97,18 @@ type questionType = {
         <div
           className={`absolute z-50 left-0 h-screen overflow-y-auto transform${
             showSlide ? "translate-x-0" : "hidden -translate-x-full"
-          } text-black border-2 w-96 bg-gray-500 duration-500`}
+          } text-black border-2 w-96 ace-${theme} duration-500`}
         >
+          <div className="w-full flex justify-end pr-2">
           <VscArrowLeft
             size={35}
             title="Close SlideBar"
             onClick={handleShowSlide}
-            className={`fixed left-80 z-50 top-3 animate-scale cursor-pointer ${
+            className={` ace-${theme}  z-50 top-3 animate-scale cursor-pointer ${
               showSlide ? "" : "hidden"
             }`}
           />
+          </div>
           <div className={`z-50`}>
             {Object.entries(question).map(([key, question], index) => (
               <Question
@@ -107,11 +116,28 @@ type questionType = {
                 question={question}
                 questionNo={index + 1}
                 setQuestion={handleQuestion}
+                theme={theme}
               />
             ))}
           </div>
         </div>
         <Compiler questionNo={currenQuestion} />
+       { showQuestion && <div className="w-full absolute items-center top-0 h-screen flex justify-center">
+          <div className={`w-[40rem] ace-${theme} border-2 rounded-md h-[35rem]`}>
+              <div className="w-full justify-end flex pr-3 pt-3 "><CgClose size={30} className="cursor-pointer" onClick={()=>{setShowQuestion(false)}}/></div>
+              <div>
+                 {
+                  getCurrentQuestion()
+                }
+              </div>
+          </div>
+        </div>
+      }
+        <div className="absolute bottom-0 flex justify-center w-full">
+          <span onClick={()=>{setShowQuestion(true)}} className={`-rotate-90 ${showQuestion ? "hidden" : ""}`}>
+          <MdDoubleArrow size={45} className="text-gray-700 cursor-pointer opacity-50 animate-scale"/>
+          </span>  
+        </div>
         <ToastContainer />
       </div>) :
       (

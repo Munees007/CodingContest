@@ -9,9 +9,19 @@ export async function addData(formData:FormData){
 
         const userRef = ref(db,`users/${roll}`);
 
-        await set(userRef,{formData});
+        const userSnapShot = await get(userRef);
 
-        console.log("form submitted successfully");
+        if(userSnapShot.exists())
+        {
+            throw new Error("Already There")
+        }
+        else{
+            await set(userRef,{formData});
+
+            console.log("form submitted successfully");
+        }
+
+        
     } catch (error) {
         console.log(error);
     }
