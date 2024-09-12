@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { BiSolidLeftArrow, BiSolidRightArrow } from "react-icons/bi";
 import Form from "../Components/Form";
 import Credits from "../Components/Credit";
-import { toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.min.css";
 import { getFlag } from "../Database/functions/addData";
 

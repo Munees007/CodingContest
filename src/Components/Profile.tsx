@@ -1,6 +1,9 @@
 import { useLocation } from 'react-router-dom'
 import { userDataType } from '../Pages/Admin';
 import { answeredType } from './Editor';
+import AceEditor from "react-ace";
+import "../Modules/language";
+import "../Modules/themes";
 
 interface CodeData {
     code: string;
@@ -22,7 +25,7 @@ export default function Profile() {
          return a;
       }
   return (
-    <div className='bg-blue-300 w-full h-screen p-3'>
+    <div className='bg-blue-300 w-full h-screen p-3 overflow-auto'>
         <div  className="bg-blue-600 border-2 border-black rounded-md
                     shadow-md shadow-black w-full text-white flex justify-around py-2">
             <p>{state.formData.rollNumber}</p>
@@ -35,7 +38,7 @@ export default function Profile() {
             }
             
         </div>
-        <div className='whitespace-pre grid mt-5 grid-cols-3 gap-3'>
+        <div className='whitespace-pre grid mt-5 grid-cols-1 gap-3'>
             {/* {
             <div className='bg-blue-600 border-2 border-black rounded-md p-3 text-white font-mono'>
                 <p>Language:{state.codeData.question1.language}</p>
@@ -56,14 +59,28 @@ export default function Profile() {
             if (isCodeData(value)) {
               return (
                     <div key={key} className='bg-blue-600 border-2 border-black rounded-md p-3 text-white font-mono'>
-                        <p>Language:{value.language}</p>
+                        <p className="font-bold text-2xl">Language:{value.language}</p>
                         <div className='flex flex-col'>
-                            <p>Code:</p>
-                            <p className='mt-2'>{value.code}</p>
+                            <p className="font-bold text-xl">Code:</p>
+                            {/* <p className='mt-2'>{value.code}</p> */}
+                            <AceEditor
+                            width="100%"
+                            mode={`${value.language === "cpp" ? "c_cpp" : value.language}`}
+                            fontSize={18}
+                            setOptions={{
+                              enableBasicAutocompletion: true,
+                              enableLiveAutocompletion: true,
+                              enableSnippets: true,
+                            }}
+                            readOnly
+                            className='rounded-md border-2 border-gray-200 shadow-md shadow-black'
+                            theme="ace-dawn"
+                            value={value.code}
+                            />
                         </div>
                         <div className='flex flex-col mt-2'>
-                            <p>Output:</p>
-                            <p className='mt-2'>{value.output}</p>
+                            <p className="font-bold text-xl">Output:</p>
+                            <p className='mt-2 font-semibold'>{value.output}</p>
                         </div>
                     </div>
                     

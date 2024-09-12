@@ -69,6 +69,7 @@ export type questionType = {
   const handleQuestion = (value: number,status:boolean) => {
     setCurrentQuestion(value);
     setShowSlide(status);
+    
   };
   const handleShowSlide = () => {
     setShowSlide(!showSlide);
@@ -143,7 +144,7 @@ export type questionType = {
       }
         <div className="absolute bottom-0 flex justify-center w-full">
           <span onClick={()=>{setShowQuestion(true)}} className={`-rotate-90 ${showQuestion ? "hidden" : ""}`}>
-          <MdDoubleArrow size={45} className="text-gray-700 cursor-pointer opacity-50 animate-scale"/>
+          <MdDoubleArrow size={45} className=" cursor-pointer opacity-50 animate-scale"/>
           </span>  
         </div>
         <ToastContainer />

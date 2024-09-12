@@ -136,7 +136,7 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
         navigate('/thankYou')
       }
 
-      if(getScore() === 5)
+      if(getScore() === 3)
       {
           setTimerRunning(false);
           setGameOver(true);
@@ -148,16 +148,14 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
   },[timer,timerRunning])
   
 
-  // useEffect(()=>{
-  //     if(Result?.output)
-  //     {
-  //       setCanSubmit(true);
-  //     }
-  //     else
-  //     {
-  //       setCanSubmit(false);
-  //     }
-  // },[Result?.output])
+  useEffect(()=>{
+      const gameover = localStorage.getItem("gameover");
+
+      if(gameover === "true")
+        {
+          navigate('/thankYou')
+        }
+  },[])
   const themes = [
     { label: "Twilight", value: "twilight" },
     { label: "Clouds", value: "clouds" },
@@ -235,7 +233,7 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
   },[answeredQuestion])
   useEffect(()=>{
     const temp = localStorage.getItem("Question"+questionNo.toString() +"language") || "java";
-
+    clearOutput();
     SetLanguage(temp);
   },[questionNo])
   useEffect(()=>{
@@ -245,10 +243,10 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
     if(code === "") {toast.error("Please Type Program Before Saving"); return} 
     localStorage.setItem(questionNo.toString(),code);
     localStorage.setItem("Question"+questionNo.toString() +"language",language);
+    toast.success("Saved Successfully");
   }
   const handleSave = ()=>{
     save();
-    toast.success("Saved Successfully");
   }
   useEffect(()=>{
     const storedCode = localStorage.getItem(questionNo.toString()) || "";

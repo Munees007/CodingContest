@@ -13,8 +13,8 @@ export const questions = [
           output: "Strings are anagram",
         },
         example2: {
-          input: 'str1 = "hello" str2 = "world"',
-          output: "Strings are not a anagram",
+          input: "",
+          output: "",
         },
       },
     },
@@ -31,8 +31,8 @@ export const questions = [
           output: "45",
         },
         example2: {
-          input: "arr = [1, 1, 1, 1]",
-          output: "No second largest value exists",
+          input: "",
+          output: "",
         },
       },
     },
@@ -40,10 +40,10 @@ export const questions = [
       title: "Draw the Pattern",
       content: {
         problem:
-          "Write a program to print the following pattern:\nP         M\n R      A\n   O  R\n     G\n  O    R\n R       A\nP          M",
-        input: "An integer `n` representing the number of rows.",
+          "Write a program to print the following pattern",
+        input: "PROGRAM",
         output:
-          "The specified pattern printed using characters in the format shown.",
+        "P         M\n R      A\n   O  R\n     G\n  O    R\n R       A\nP          M",
         example1: {
           input: "",
           output: "",
@@ -57,20 +57,20 @@ export const questions = [
   },
   {
     question1: {
-      title: "Rotate Array by One Position Clockwise",
+      title: "Rotate Array by Two Position Anti-Clockwise",
       content: {
         problem:
-          "Given an array `arr`, rotate the array by one position in the clockwise direction. The last element of the array should move to the first position, and all other elements should shift one position to the right.",
-        input: "An array of integers, `arr`.",
+          "Given an array `arr`, rotate the array by two position in the Anti-clockwise direction. The first element of the array should move to the last position, and all other elements should shift one position to the right.",
+        input: "An array of integers, `1,2,3,4,5`.",
         output:
-          "An array of integers, rotated by one position in the clockwise direction.",
+          "An array of integers, rotated by two position in the Anti-clockwise direction.",
         example1: {
-          input: "arr = [1, 2, 3, 4, 5]",
-          output: "[5, 1, 2, 3, 4]",
+          input: "arr = [1,2,3,4,5]",
+          output: "[3,4,5,1,2]",
         },
         example2: {
-          input: "arr = [9, 8, 7, 6, 4, 2, 1, 3]",
-          output: "[3, 9, 8, 7, 6, 4, 2, 1]",
+          input: "",
+          output: "",
         },
       },
     },
@@ -79,11 +79,11 @@ export const questions = [
       content: {
         problem:
           "Given an array `A` of `N` elements, find the majority element in the array. A majority element in an array `A` of size `N` is an element that appears strictly more than `N/2` times in the array.",
-        input: "An array `A` of integers and its size `N`.",
+        input: "An array `[3,3,4,2,4,4,2,3,1]` of integers and its size `N`.",
         output:
           "The majority element in the array. If no majority element exists, return 'No majority element'.",
         example1: {
-          input: "A = [3, 3, 4, 2, 4, 4, 2, 4, 4], N = 9",
+          input: "A = [3,3,4,2,4,4,2,4,4]",
           output: "4",
         },
         example2: {
@@ -98,7 +98,7 @@ export const questions = [
         problem:
           "Given two sorted arrays, merge them into a single sorted array without duplicates.",
         input:
-          "Two sorted arrays, `arr1` and `arr2`, where each array is sorted in ascending order.",
+          "Two sorted arrays, `1,2,3,4,5` and `3,4,5,6,7`, where each array is sorted in ascending order.",
         output:
           "A single sorted array that contains all unique elements from both `arr1` and `arr2`.",
         example1: {
@@ -106,8 +106,8 @@ export const questions = [
           output: "[1, 2, 3, 4, 5, 6, 7]",
         },
         example2: {
-          input: "arr1 = [10, 20, 30], arr2 = [5, 15, 25, 35]",
-          output: "[5, 10, 15, 20, 25, 30, 35]",
+          input: "",
+          output: "",
         },
       },
     },
@@ -118,7 +118,7 @@ export const questions = [
       content: {
         problem:
           "Write a program to print the following pattern:\n1\n1 0\n1 0 1\n1 0 1 0\n1 0 1 0 1",
-        input: "An integer `n` representing the number of rows.",
+        input: "An integer `5` representing the number of rows.",
         output: "The binary pattern as described, with alternating 1s and 0s.",
         example1: {
           input: "n = 5",
@@ -136,15 +136,15 @@ export const questions = [
         problem:
           "Given an array of size `n-1` that contains distinct integers in the range from 1 to `n`, return the missing element.",
         input:
-          "An array of integers of size `n-1`, where each integer is distinct and in the range from 1 to `n`.",
+          "An array of integers of size `n-1`, where each integer is distinct and in the range from 1 to `10`.",
         output: "An integer representing the missing element in the array.",
         example1: {
-          input: "arr = [1, 2, 4, 5, 6]",
-          output: "3",
-        },
-        example2: {
           input: "arr = [3, 7, 1, 2, 8, 4, 5]",
           output: "6",
+        },
+        example2: {
+          input: "",
+          output: "",
         },
       },
     },
