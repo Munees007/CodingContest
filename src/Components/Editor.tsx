@@ -30,23 +30,16 @@ export type answeredType = {
   answered2:boolean;
   answered3:boolean;
 }
-
+type question = {
+  code:string,
+  language:string,
+  output:string,
+}
+type Questions = {
+  [key:string]:question
+}
 export type codeData = {
-  question1:{
-    code:string,
-    language:string,
-    output:string,
-  },
-  question2:{
-    code:string,
-    language:string,
-    output:string,
-  }
-  question3:{
-    code:string,
-    language:string,
-    output:string,
-  }
+  questions:Questions[]
   fullData:answeredType,
   timeLeft: string
 }
@@ -182,6 +175,21 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
   const handleLanguage = (value: string) => {
     SetLanguage(value);
   };
+  const getQuestionsFromLocalStorage = (numberOfQuestions: number): Questions => {
+    const questions: Questions = {};
+    
+    for (let i = 1; i <= numberOfQuestions; i++) {
+      const keyPrefix = `${i}`;
+      
+      questions[`question${i}`] = {
+        code: localStorage.getItem(keyPrefix) || "",
+        language: localStorage.getItem(`${keyPrefix}language`) || "java",
+        output: localStorage.getItem(`${keyPrefix}output`) || ""
+      };
+    }
+    
+    return questions;
+  };
   const handleSubmit = () =>{
     if (!Result) return toast.error("Run the Code First")
     if(Result?.success){
@@ -194,22 +202,12 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
         }
         save();
         setAnsweredQuestions(updatedData);
+        const number = 6
+        const questionsData = getQuestionsFromLocalStorage(number)
         const temp:codeData = {
-          question1:{
-            code: localStorage.getItem("1") || "",
-            language:localStorage.getItem("Question1language")|| "java",
-            output:localStorage.getItem("Question1output") || ""
-          },
-          question2:{
-            code: localStorage.getItem("2") || "",
-            language:localStorage.getItem("Question2language")|| "java",
-            output:localStorage.getItem("Question2output") || ""
-          },
-          question3:{
-            code: localStorage.getItem("3") || "",
-            language:localStorage.getItem("Question3language")|| "java",
-            output:localStorage.getItem("Question3output") || ""
-          },
+          questions:[
+            questionsData
+          ],
           fullData:updatedData,
           timeLeft:formatTime(timer)
         }
