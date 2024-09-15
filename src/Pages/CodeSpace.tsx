@@ -3,7 +3,6 @@ import Compiler from "../Components/Compiler";
 import "../Modules/themes";
 import { VscArrowLeft, VscArrowRight } from "react-icons/vsc";
 import "../Modules/questions";
-import { questions } from "../Modules/questions";
 import Question from "../Components/Question";
 import {  ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.min.css";
@@ -12,6 +11,8 @@ import normalLoading from "../assets/animations/normalLoading.json";
 import { useNavigate } from "react-router-dom";
 import { MdDoubleArrow } from "react-icons/md";
 import FullQuestion from "../Components/FullQuestion";
+import { Level } from "../types/QuestionType";
+import { getLevelsData } from "../Database/functions/addData";
 
 type example = {
   input:string,
@@ -49,25 +50,39 @@ export type questionType = {
     return temp ? temp : "dracula";
   });
   const [showQuestion,setShowQuestion] = useState<boolean>(false);
-  const [question, setQuestion] = useState<questionType | null>(null);
+  const [levelData, setLevelData] = useState<Level[] | null>(null);
+  const [currentLevel,setCurrentLevel] = useState<Level | null>(null);
+  useEffect(()=>{
+    const FectchData = async () =>{
+      // const temp:Level[] = JSON.parse(localStorage.getItem("UselevelData")!);
+      // if(temp){
+      //     setLevelData(temp)
+      // } 
+      // else
+      // {
+        const getdata:Level[] = await getLevelsData();
+        setLevelData(getdata);
+        localStorage.setItem("UselevelData",JSON.stringify(getdata));
+      // }
+    }
+    FectchData();
+  },[])
   useEffect(() => {
-    const temp = localStorage.getItem("questionNo");
-
+    const temp:number = parseInt(localStorage.getItem("LevelIndicator")!);
     if (temp) {
       // Use the stored question index
-      const b: number = parseInt(temp);
-      setQuestion(questions[b]);
+      levelData && setCurrentLevel(levelData[temp])
+      
     } else {
       // Generate a new random number and store it
-      const a: number = Math.floor(Math.random() * questions.length);
-      localStorage.setItem("questionNo", a.toString());
-      setQuestion(questions[a]);
+      localStorage.setItem("LevelIndicator","0");
+      levelData && setCurrentLevel(levelData[0]);
     }
-  }, []);
+  }, [levelData]);
   const [showSlide, setShowSlide] = useState<boolean>(false);
-  const [currenQuestion, setCurrentQuestion] = useState<number>(1);
+  const [currenQuestionIndex, setCurrentQuestionIndex] = useState<number>(1);
   const handleQuestion = (value: number,status:boolean) => {
-    setCurrentQuestion(value);
+    setCurrentQuestionIndex(value);
     setShowSlide(status);
     
   };
@@ -93,14 +108,13 @@ export type questionType = {
   }, [theme]);
 
   const getCurrentQuestion = ()=>{
-    const questionKey: keyof questionType = `question${currenQuestion}` as keyof questionType;
-
-    return question?.[questionKey];
+    console.log(currenQuestionIndex)
+    return currentLevel?.questions[currenQuestionIndex-1]
   }
 
   return (
     <div>
-      { question ? (
+      { currentLevel ? (
       <div className={`ace-${theme} relative w-full`}>
         <VscArrowRight
           title="Click to see Questions"
@@ -127,9 +141,9 @@ export type questionType = {
           />
           </div>
           <div className={`z-50`}>
-            {Object.entries(question).map(([key, question], index) => (
+            {currentLevel.questions.map((question, index) => (
               <Question
-                key={key}
+                key={index}
                 question={question}
                 questionNo={index + 1}
                 setQuestion={handleQuestion}
@@ -139,7 +153,7 @@ export type questionType = {
             ))}
           </div>
         </div>
-        <Compiler questionNo={currenQuestion} />
+        <Compiler questionNo={currenQuestionIndex} />
        { showQuestion && <FullQuestion theme={theme} getCurrentQuestion={getCurrentQuestion} setShowQuestion={setShowQuestion}/>
       }
         <div className="absolute bottom-0 flex justify-center w-full">

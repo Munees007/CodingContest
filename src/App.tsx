@@ -27,11 +27,11 @@ function App() {
         <Routes>
             <Route path='/' element={<Home/>}></Route>
             <Route path='/codespace' element={<CodeSpace/>}></Route>
-            <Route path="/dw" element={<Admin/>}/>
+            <Route path="/admin" element={<Admin/>}/>
             <Route path='/profile/:userName' element={<Profile/>}/>
             <Route path='/thankYou' element={<ThankYou/>}/>
         </Routes>
-      </Router>6
+      </Router>
     </div>
   )
 }
