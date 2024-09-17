@@ -13,37 +13,30 @@ import empty from '../assets/animations/codeStart.json';
 import error1 from "../assets/animations/error1.json";
 import { ResultType } from "./Compiler";
 import { FaTrash } from "react-icons/fa";
-import { answers, answersType } from "../Modules/answers";
 import successAni from "../assets/animations/sucess1.json";
 import timerAni from "../assets/animations/timer1.json";
-import { addCodeData } from "../Database/functions/addData";
 import { useNavigate } from "react-router-dom";
+import { answerType, Level } from "../types/QuestionType";
 
+export const getCurrentLevelIndex = () =>{
+  const temp:number = parseInt(localStorage.getItem("LevelIndicator")!) || 0
+    return temp
+}
 interface EditorProps {
   ExecuteCode: (code: string, language: string, file: string) => void;
   Result: ResultType | null;
   questionNo:number;
   clearOutput:() => void;
+  currentLevel:Level,
+  increaseLevel: () => Promise<boolean>,
+  
 }
-export type answeredType = {
-  answered1:boolean;
-  answered2:boolean;
-  answered3:boolean;
-}
-type question = {
-  code:string,
-  language:string,
-  output:string,
-}
-type Questions = {
-  [key:string]:question
-}
-export type codeData = {
-  questions:Questions[]
-  fullData:answeredType,
-  timeLeft: string
-}
-const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOutput }) => {
+export const formatTime = (seconds: number) => {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+  return `${minutes}m ${remainingSeconds}s`;
+};
+const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOutput,currentLevel ,increaseLevel}) => {
 
   const [code, setCode] = useState<string>(()=>{
     
@@ -51,8 +44,11 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
   });
   const navigate = useNavigate();
   const [timerRunning,setTimerRunning] = useState<boolean>(true);
-  const [gameOver,setGameOver] = useState<boolean>(false);
-
+  const [gameOver,setGameOver] = useState<boolean>(()=>{
+    const temp:boolean = Boolean(localStorage.getItem("gameover")) || false
+    return temp;
+  });
+  const [codeData,setCodeData] = useState<answerType | null>(null);
   useEffect(()=>{
       const temp = localStorage.getItem("gameOver") || "false";
       const timer = localStorage.getItem("timer") || "60";
@@ -72,22 +68,17 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
       return 60*60; // time in seconds 
     }
   })
-  const [answeredQuestion,setAnsweredQuestions] = useState<answeredType>(()=>{
-    const storedData = localStorage.getItem("answeredData");
-    return  storedData ? JSON.parse(storedData) : {answered1:false,
-    answered2:false,
-    answered3:false
-  }});
+  const [currentLevelIndex,setCurrentLevelIndex] = useState<number>(()=>{
+    const temp:number = parseInt(localStorage.getItem("LevelIndicator")!) || 0
+    return temp
+  })
   //const [canSubmit,setCanSubmit] = useState<boolean>(false);
   const [theme, SetTheme] = useState<string>(()=>{
     return localStorage.getItem("theme") || "dracula";
   });
   const [language, SetLanguage] = useState<string>(()=>{
-    return localStorage.getItem("Question"+questionNo.toString() +"language") || "java";
+    return localStorage.getItem("Level" + getCurrentLevelIndex() + "Question"+questionNo.toString() +"language") || "java";
   });
-  const [lot,_] = useState<number>(()=>{
-    return parseInt(localStorage.getItem('questionNo')!)
-  })
   const runCode = () => {
     if (code !== "") {
       ExecuteCode(code, language, "main." + language);
@@ -100,17 +91,6 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
     const remainingSeconds = seconds % 60;
     return `${minutes}m ${remainingSeconds}s`;
   };
-
-  const getScore = ():number =>{
-    let a:number = 0;
-     Object.entries(answeredQuestion).map(([_,val])=>{
-       if(val)
-       {
-          a++;
-       }
-     })
-     return a;
-  }
   useEffect(()=>{
     if(!timerRunning && gameOver) return
       const handleTimer = setInterval(()=>{
@@ -118,7 +98,6 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
           localStorage.setItem("timer",timer.toString())
           
       },1000)
-
       if(timer ===0)
       {
         setTimer(0);
@@ -129,17 +108,32 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
         navigate('/thankYou')
       }
 
-      if(getScore() === 3)
+      if(currentLevel.questions.length === getScore())
       {
-          setTimerRunning(false);
-          setGameOver(true);
-          localStorage.setItem("gameOver","true");
-          navigate('/thankYou')
+          console.log("IncreasedLevel")
+          const temp:Promise<boolean> = increaseLevel()
+          setCurrentLevelIndex(getCurrentLevelIndex());
+          if(Boolean(temp))
+          {
+            setTimerRunning(false);
+            setGameOver(true);
+            localStorage.setItem("gameOver","true");
+            navigate('/thankYou');
+          }
       }
+
+
       
       return() => clearInterval(handleTimer)      
-  },[timer,timerRunning])
-  
+  },[timer,timerRunning,currentLevelIndex,gameOver])
+  const getScore = ():number =>{
+      const currentLevel = parseInt(localStorage.getItem("LevelIndicator")!) || 0;
+      if (codeData && codeData.finalAnswer && codeData.finalAnswer[currentLevel]) {
+        return codeData.finalAnswer[currentLevel].score || 0;
+      }
+    
+      return 0; // Return 0 if any of the checks fail
+    };
 
   useEffect(()=>{
       const gameover = localStorage.getItem("gameover");
@@ -148,7 +142,7 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
         {
           navigate('/thankYou')
         }
-  },[])
+  },[gameOver])
   const themes = [
     { label: "Twilight", value: "twilight" },
     { label: "Clouds", value: "clouds" },
@@ -175,79 +169,82 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
   const handleLanguage = (value: string) => {
     SetLanguage(value);
   };
-  const getQuestionsFromLocalStorage = (numberOfQuestions: number): Questions => {
-    const questions: Questions = {};
+  const getQuestionsFromLocalStorage = (numberOfQuestions: number,levelNo:number): answerType => {
+    let questions: answerType = JSON.parse(localStorage.getItem("codeData")!) || {finalAnswer:[]};
     
+    if (!questions.finalAnswer[levelNo]) {
+      questions.finalAnswer[levelNo] = { answer: [] };
+    }
     for (let i = 1; i <= numberOfQuestions; i++) {
       const keyPrefix = `${i}`;
       
-      questions[`question${i}`] = {
-        code: localStorage.getItem(keyPrefix) || "",
-        language: localStorage.getItem(`${keyPrefix}language`) || "java",
-        output: localStorage.getItem(`${keyPrefix}output`) || ""
+      questions.finalAnswer[levelNo].answer[i-1] = {
+        code: localStorage.getItem("Level" + getCurrentLevelIndex() + keyPrefix) || "",
+        language: localStorage.getItem("Level" + getCurrentLevelIndex() +`${keyPrefix}language`) || "java",
+        output: localStorage.getItem("Level" + getCurrentLevelIndex() +"Question"+`${keyPrefix}output`) || "",
+        answered:Boolean(localStorage.getItem("Level" + getCurrentLevelIndex() +"question" + i + "answered")) || false
       };
+      
     }
-    
+    let score = 0;
+      for(let i=0;i<questions.finalAnswer[levelNo].answer.length;i++)
+      {
+        if(questions.finalAnswer[levelNo].answer[i].answered)
+        {
+          score++;
+        }
+      }
+      questions.finalAnswer[levelNo].score = score;
+      questions.timeLeft = timer;
+      setCodeData(questions);
+      localStorage.setItem("codeData",JSON.stringify(questions));
+      console.log(questions);
     return questions;
   };
   const handleSubmit = () =>{
     if (!Result) return toast.error("Run the Code First")
-    if(Result?.success){
-      let answerKey = "answer"+questionNo as keyof answersType;
-      if(Result?.output === answers[lot][answerKey])
-      {
-        const updatedData:answeredType = {
-          ...answeredQuestion,
-          [`answered${questionNo}`]:true
+      if(Result?.success){
+        const correctAnswer = currentLevel.questions[questionNo-1].content.answer;
+        console.log(correctAnswer)
+        console.log(Result.output)
+        if(Result.output === correctAnswer)
+        {
+          save();
+          localStorage.setItem("Level" + getCurrentLevelIndex() +"question" + questionNo + "answered","true");
+          const data:any = getQuestionsFromLocalStorage(currentLevel.questions.length,getCurrentLevelIndex())
+          console.log(data)
+          toast.success("Correct answer");
         }
-        save();
-        setAnsweredQuestions(updatedData);
-        const number = 6
-        const questionsData = getQuestionsFromLocalStorage(number)
-        const temp:codeData = {
-          questions:[
-            questionsData
-          ],
-          fullData:updatedData,
-          timeLeft:formatTime(timer)
+        else{
+          localStorage.setItem("Level" + getCurrentLevelIndex() +"question" + questionNo + "answered","false");
+          toast.error("Wrong Answer");
         }
-
-        addCodeData(temp);
-        toast.success("submitted successfully")
       }
       else
       {
-        toast.error("output not matched")
+        toast.warning("Please correct the errors before submitting")
       }
-    }
-    else
-    {
-      toast.warning("Please correct the errors before submitting")
-    }
   };
 
   useEffect(()=>{
-    localStorage.setItem("answeredData",JSON.stringify(answeredQuestion));
-  },[answeredQuestion])
-  useEffect(()=>{
-    const temp = localStorage.getItem("Question"+questionNo.toString() +"language") || "java";
+    const temp = localStorage.getItem("Level" + getCurrentLevelIndex() +"Question"+questionNo.toString() +"language") || "java";
     clearOutput();
     SetLanguage(temp);
   },[questionNo])
   useEffect(()=>{
-      localStorage.setItem("Question"+questionNo+"output",Result?.output!);
+      localStorage.setItem("Level" + getCurrentLevelIndex() +"Question"+questionNo+"output",Result?.output!);
   },[Result])
   const save = ()=>{
     if(code === "") {toast.error("Please Type Program Before Saving"); return} 
-    localStorage.setItem(questionNo.toString(),code);
-    localStorage.setItem("Question"+questionNo.toString() +"language",language);
+    localStorage.setItem("Level" + getCurrentLevelIndex() +questionNo.toString(),code);
+    localStorage.setItem("Level" + getCurrentLevelIndex() +"Question"+questionNo.toString() +"language",language);
     toast.success("Saved Successfully");
   }
   const handleSave = ()=>{
     save();
   }
   useEffect(()=>{
-    const storedCode = localStorage.getItem(questionNo.toString()) || "";
+    const storedCode = localStorage.getItem("Level" + getCurrentLevelIndex() +questionNo.toString()) || "";
     setCode(storedCode);
   },[questionNo])
   const messages = [
@@ -263,14 +260,18 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
   return (
     <div className={`ace-${theme ? theme : "dracula"} relative h-screen p-5 overflow-hidden`}>
       <p className="text-4xl font-bold text-center">CODING CONTEST</p>
-      {
-        answeredQuestion[`answered${questionNo}` as keyof answeredType] && (
-          <div className="z-40 absolute inset-0 flex-col flex justify-center items-center bg-black bg-opacity-50 text-white text-3xl font-semibold">
-            <Lottie animationData={successAni} loop={true} className="w-96"/>
-            <p>{messages[generateRandom(messages.length)]}</p>
-          </div>
-        )
-      }
+      {codeData && 
+ codeData.finalAnswer &&
+ codeData.finalAnswer[currentLevelIndex] &&
+ codeData.finalAnswer[currentLevelIndex].answer &&
+ codeData.finalAnswer[currentLevelIndex].answer[questionNo - 1] &&
+ codeData.finalAnswer[currentLevelIndex].answer[questionNo - 1].answered && (
+  <div className="z-40 absolute inset-0 flex-col flex justify-center items-center bg-black bg-opacity-50 text-white text-3xl font-semibold">
+    <Lottie animationData={successAni} loop={true} className="w-96"/>
+    <p>{messages[generateRandom(messages.length)]}</p>
+  </div>
+)}
+
       <div className="flex gap-4 mt-6">
         <DropDown
           options={themes}

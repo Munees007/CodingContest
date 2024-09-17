@@ -8,11 +8,11 @@ const ThankYou = ()=>{
     const navigate = useNavigate();
     useEffect(()=>{
         const gameOver = localStorage.getItem("gameover");
-        if(gameOver === "true")
+        if(gameOver === "false")
             {
                 navigate('/codespace');
             }
-    })
+    },[navigate])
     return(
         <div className={`flex-col w-full h-screen ace-${getTheme} flex justify-center items-center`}>
             <p className="text-[8rem] uppercase font-serif">Thank You</p>

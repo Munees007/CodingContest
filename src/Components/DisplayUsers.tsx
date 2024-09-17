@@ -1,17 +1,25 @@
 import { Link } from "react-router-dom"
 import { userDataType } from "../Pages/Admin";
 import React from "react";
-import { answeredType } from "./Editor";
+import { formatTime } from "./Editor";
 
 interface DisplayUsersProps{
     userData:userDataType[],
-    getScore: (obj: answeredType) => number,
     display:boolean,
     handleFlag: () => Promise<void>,
     flag:boolean
 }
+export const getScore = (data:userDataType):number =>{
+    let score = 0
+    for(let i=0;i<data.codeData.finalAnswer.length;i++)
+    {
+        score = score + data?.codeData?.finalAnswer[i]?.score!
+    }
+    return score
+}
+const DisplayUsers:React.FC<DisplayUsersProps> = ({userData,display,handleFlag,flag}) =>{
 
-const DisplayUsers:React.FC<DisplayUsersProps> = ({userData,getScore,display,handleFlag,flag}) =>{
+    
     return(
         <div className="w-full">
             {
@@ -23,7 +31,7 @@ const DisplayUsers:React.FC<DisplayUsersProps> = ({userData,getScore,display,han
                 </div>
             }
         <table className="w-full overflow-auto text-white">
-            <tr  className={`w-full p-2 bg-[#4f518c] text-left border-2 border-[#dabfff] grid grid-cols-6 rounded-sm `}>
+            <tr  className={`w-full p-2 bg-[#4f518c] text-left border-2 border-[#dabfff] grid grid-cols-6 rounded-sm`}>
                         <th>S.NO</th>
                         <th>Roll NO</th>
                         <th>Name</th>
@@ -31,14 +39,14 @@ const DisplayUsers:React.FC<DisplayUsersProps> = ({userData,getScore,display,han
                             display && <>
                                 <th>Email</th>
                                 <th>Score</th>
-                                <th>Time Left</th>
+                                <th>Time Taken</th>
                             </>
                         }
             </tr>
             {
                 userData && userData.map((value,index)=>(
-                    <Link to={`/profile/${value.formData.name}`}  state={value} className={`${display ? "" :"pointer-events-none"}`} >
-                    <tr key={index} className="w-full p-2 bg-[#907ad6] border border-[#dabfff] grid grid-cols-6 rounded-sm justify-between">
+                    <Link to={`/profile/${value.formData.name}`} key={index} state={value} className={`${display ? "" :"pointer-events-none"}`} >
+                    <tr key={index} className="w-full p-2 bg-[#907ad6] border border-[#dabfff] grid grid-cols-6 rounded-sm justify-center">
                         <td>{index+1}.</td>
                         <td>{value.formData.rollNumber}</td>
                         <td>{value.formData.name}</td>
@@ -46,8 +54,8 @@ const DisplayUsers:React.FC<DisplayUsersProps> = ({userData,getScore,display,han
                             display &&<><td>{value.formData.email}</td>
                         {
                             value.codeData ? <>
-                                <td>{getScore(value.codeData.fullData)}</td>
-                                <td>{value.codeData.timeLeft}</td>
+                                <td className="ml-6">{getScore(value)}</td>
+                                <td>{formatTime(((60*60)-value.codeData.timeLeft!))}</td>
                                 </> : <>
                                 <td>-</td>
                                 <td>0m 0s</td>

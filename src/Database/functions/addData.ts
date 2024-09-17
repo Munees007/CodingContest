@@ -1,8 +1,8 @@
 import { get, ref, set, update } from "firebase/database";
 import { FormData } from "../../Components/Form";
 import { db } from "../firebase";
-import { codeData } from "../../Components/Editor";
-import { Level, questionType } from "../../types/QuestionType";
+
+import { answerType, Level, questionType } from "../../types/QuestionType";
 
 export async function addData(formData:FormData){
     try {
@@ -27,7 +27,8 @@ export async function addData(formData:FormData){
         console.log(error);
     }
 }
-export async function addCodeData(codeData:codeData){
+
+export async function addCodeData(codeData:answerType){
     try {
         const userData = localStorage.getItem("userData");
         const data = JSON.parse(userData!);
@@ -122,6 +123,21 @@ export async function addQuestion(newQuestion:questionType,levelIndex:number){
         
     }
 }
+function unescapeString(value: any): any {
+    if (typeof value === 'string') {
+        // Replace double escape sequences like "\\t" with actual escape sequences like "\t"
+        return value.replace(/\\t/g, '\t').replace(/\\n/g, '\n').replace(/\\r/g, '\r');
+    } else if (typeof value === 'object' && value !== null) {
+        // If the value is an object or array, recursively unescape its properties or elements
+        for (const key in value) {
+            if (value.hasOwnProperty(key)) {
+                value[key] = unescapeString(value[key]);
+            }
+        }
+    }
+    return value;
+}
+
 
 export async function getLevelsData():Promise<Level[]>
 {
@@ -132,10 +148,14 @@ export async function getLevelsData():Promise<Level[]>
 
         if(snapshot.exists())
         {
-            const data = snapshot.val();
+            let data = snapshot.val();
 
-            const levelArray:Level[] = Object.values(data);
+            // Apply unescapeString to clean up escape sequences across the data
+            data = unescapeString(data);
 
+            // Convert the data to an array of Level objects
+            const levelArray: Level[] = Object.values(data);
+            console.log(levelArray);
             return levelArray;
         }
         else{

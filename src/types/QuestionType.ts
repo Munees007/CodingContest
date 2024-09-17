@@ -1,3 +1,4 @@
+//question type
 type example = {
     input:string,
     output:string
@@ -16,6 +17,19 @@ export type questionType = {
 }
 export type Level = {
     questions:questionType[],
-    answeredData?:boolean[],
 }
-
+//answer type individual users
+type answerFormat = {
+  language:string,
+  code:string,
+  output:string,
+  answered:boolean
+}
+export type answerLevel = {
+  answer:answerFormat[],
+  score?:number
+}
+export type answerType = {
+  finalAnswer:answerLevel[],
+  timeLeft ?: number
+}

@@ -1,15 +1,18 @@
 
 import  React, { useRef, useEffect, useState } from "react";
 import Editor from "./Editor";
+import { Level } from "../types/QuestionType";
 
 interface CompilerProps{
-  questionNo:number
+  questionNo:number,
+  currentLevelData:Level, 
+  increaseLevel: () => Promise<boolean>,
 }
 export interface ResultType {
   output:string,  
   success:boolean
 }
-const Compiler:React.FC<CompilerProps> = ({questionNo}) => {
+const Compiler:React.FC<CompilerProps> = ({questionNo,currentLevelData,increaseLevel}) => {
   const iFrameRef = useRef<HTMLIFrameElement>(null);
   const [result,setResult] = useState<ResultType | null>(null);
   const [IsCodeChanged,SetCodeChanged] = useState(false);
@@ -92,7 +95,7 @@ const Compiler:React.FC<CompilerProps> = ({questionNo}) => {
       width="100%"
       className="iframe hidden"
     ></iframe>
-    <Editor  ExecuteCode={ExecuteCode} Result={result} questionNo={questionNo} clearOutput={handleClearResult}/>
+    <Editor currentLevel={currentLevelData} increaseLevel={increaseLevel} ExecuteCode={ExecuteCode} Result={result} questionNo={questionNo} clearOutput={handleClearResult}/>
     </div>
   );
 };

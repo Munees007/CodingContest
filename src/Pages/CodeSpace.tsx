@@ -11,32 +11,11 @@ import normalLoading from "../assets/animations/normalLoading.json";
 import { useNavigate } from "react-router-dom";
 import { MdDoubleArrow } from "react-icons/md";
 import FullQuestion from "../Components/FullQuestion";
-import { Level } from "../types/QuestionType";
-import { getLevelsData } from "../Database/functions/addData";
+import { answerType, Level } from "../types/QuestionType";
+import { addCodeData, getLevelsData } from "../Database/functions/addData";
+import { getCurrentLevelIndex } from "../Components/Editor";
 
-type example = {
-  input:string,
-  output:string
-}
-type content = {
-    problem:string,
-    input: string,
-    output:string,
-    example1:example,
-    example2:example
-}
-export type question = {
-  title:string,
-  content:content
-}
-export type questionType = {
-  question1: question;
-  question2: question;
-  question3: question;
-};
-
-
-  const CodeSpace = () =>{
+const CodeSpace = () =>{
     const navigate = useNavigate();
   useEffect(()=>{
       const temp = localStorage.getItem("formSubmitted");
@@ -54,16 +33,21 @@ export type questionType = {
   const [currentLevel,setCurrentLevel] = useState<Level | null>(null);
   useEffect(()=>{
     const FectchData = async () =>{
-      // const temp:Level[] = JSON.parse(localStorage.getItem("UselevelData")!);
-      // if(temp){
-      //     setLevelData(temp)
-      // } 
-      // else
-      // {
+      const t = localStorage.getItem("gameover") || "false"
+      if(t==="true")
+      {
+        navigate("/thankYou")
+      }
+      const temp:Level[] = JSON.parse(localStorage.getItem("UselevelData")!);
+      if(temp){
+          setLevelData(temp)
+      } 
+      else
+      {
         const getdata:Level[] = await getLevelsData();
         setLevelData(getdata);
         localStorage.setItem("UselevelData",JSON.stringify(getdata));
-      // }
+      }
     }
     FectchData();
   },[])
@@ -78,7 +62,7 @@ export type questionType = {
       localStorage.setItem("LevelIndicator","0");
       levelData && setCurrentLevel(levelData[0]);
     }
-  }, [levelData]);
+  }, [levelData,currentLevel]);
   const [showSlide, setShowSlide] = useState<boolean>(false);
   const [currenQuestionIndex, setCurrentQuestionIndex] = useState<number>(1);
   const handleQuestion = (value: number,status:boolean) => {
@@ -112,6 +96,30 @@ export type questionType = {
     return currentLevel?.questions[currenQuestionIndex-1]
   }
 
+  const increaseLevel = async ():Promise<boolean> =>{
+    let level:number = getCurrentLevelIndex();
+    console.log("triggered")
+    if(levelData){
+      if(level < levelData?.length-1){
+        level++;
+        setCurrentLevel(levelData[level])
+        localStorage.setItem("LevelIndicator",(level).toString());
+        return false
+      }
+      else
+      {
+        console.log("triggered")
+        const codeData:answerType = JSON.parse(localStorage.getItem("codeData")!)
+        localStorage.setItem("LevelIndicator",(level+1).toString());
+        await addCodeData(codeData);
+        localStorage.setItem("gameover","true");
+        return true
+        
+      }
+    }
+    return false
+  }
+
   return (
     <div>
       { currentLevel ? (
@@ -140,7 +148,8 @@ export type questionType = {
             }`}
           />
           </div>
-          <div className={`z-50`}>
+          <div className={`z-50 ace-${theme ? theme : "dracula"}`}>
+            <p className="text-2xl font-mono m-2">Level{getCurrentLevelIndex()}</p>
             {currentLevel.questions.map((question, index) => (
               <Question
                 key={index}
@@ -153,7 +162,7 @@ export type questionType = {
             ))}
           </div>
         </div>
-        <Compiler questionNo={currenQuestionIndex} />
+        <Compiler increaseLevel={increaseLevel} questionNo={currenQuestionIndex} currentLevelData={currentLevel}/>
        { showQuestion && <FullQuestion theme={theme} getCurrentQuestion={getCurrentQuestion} setShowQuestion={setShowQuestion}/>
       }
         <div className="absolute bottom-0 flex justify-center w-full">

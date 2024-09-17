@@ -1,17 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import { answeredType, codeData } from "../Components/Editor";
 import { getData, getFlag, setFlag } from "../Database/functions/addData";
 import { FormData } from "../Components/Form";
 import { toast, ToastContainer } from "react-toastify";
 import DisplayUsers from "../Components/DisplayUsers";
-import { Level, questionType } from "../types/QuestionType";
+import { answerType  } from "../types/QuestionType";
 import CreateQuestions from "../Components/CreateQuestions";
 import ManageQuestions from "../Components/ManageQuestions";
 
 export interface userDataType{
     key:string
     formData:FormData,
-    codeData:codeData
+    codeData:answerType
 }
 const Admin = () =>{
     const [userData,setUserData] = useState<userDataType[]>();
@@ -21,11 +20,6 @@ const Admin = () =>{
         return  Boolean(sessionStorage.getItem("adminVerified")) || false
     })
     const [showPanels,setShowPanels] = useState<boolean[]>([false,false,false,false]);
-    const [temp,setTemp] = useState<Level | null>(null);
-    const DefaultValue:Level = {
-        questions:[],
-        answeredData:[]
-    }
     useEffect(()=>{
         const fetchData = async () =>{
             const temp = await getData();
@@ -36,16 +30,6 @@ const Admin = () =>{
         
         fetchData();
     },[])
-    const getScore = (obj:answeredType):number =>{
-        let a:number = 0;
-         Object.entries(obj).map(([_,val])=>{
-           if(val)
-           {
-              a++;
-           }
-         })
-         return a;
-      }
       const [flag,setflag] = useState<boolean>();
       const handleFlag = async () =>{
         setflag(!flag);
@@ -139,18 +123,18 @@ const Admin = () =>{
                 {
                     showPanels[0] && 
                     <div className="w-full">
-                        <DisplayUsers flag={flag!} getScore={getScore} userData={userData!} display={false} handleFlag={handleFlag}/>
+                        <DisplayUsers flag={flag!}  userData={userData!} display={false} handleFlag={handleFlag}/>
                     </div>
                 }
                 {
                     showPanels[1] &&
                     <div className="w-full">
-                        <DisplayUsers flag={flag!} getScore={getScore} userData={userData!} display={true} handleFlag={handleFlag}/>
+                        <DisplayUsers flag={flag!} userData={userData!} display={true} handleFlag={handleFlag}/>
                     </div>
                 }
                 {
                     showPanels[2] &&
-                    <div>
+                    <div className="w-full">
                         <CreateQuestions/>
                     </div>
                 }
