@@ -49,6 +49,7 @@ const CodeSpace = () =>{
         setLevelData(getdata);
         localStorage.setItem("UselevelData",JSON.stringify(getdata));
       }
+      
     }
     FectchData();
   },[gameOver])
@@ -63,6 +64,7 @@ const CodeSpace = () =>{
       localStorage.setItem("LevelIndicator","0");
       levelData && setCurrentLevel(levelData[0]);
     }
+    levelData && localStorage.setItem("MaxLength",levelData?.length.toString());
   }, [levelData,currentLevel]);
   const [showSlide, setShowSlide] = useState<boolean>(false);
   const [currenQuestionIndex, setCurrentQuestionIndex] = useState<number>(1);

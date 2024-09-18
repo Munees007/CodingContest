@@ -115,6 +115,15 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
           setCurrentLevelIndex(getCurrentLevelIndex());
       }
 
+      const temp = getCurrentLevelIndex();
+      const m = parseInt(localStorage.getItem("MaxLength")!) || 0;
+      if(temp<m)
+      {
+
+      }else{
+        navigate('/thankYou')
+      }
+
 
       
       return() => clearInterval(handleTimer)      
