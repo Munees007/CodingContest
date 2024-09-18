@@ -37,10 +37,11 @@ const Home = () =>{
         }
     }
     useEffect(()=>{
-      setInterval(()=>{
+        const handleInterval =  setInterval(()=>{
           handleChangeRoute();
       },3000)
-    })
+      return ()=> clearInterval(handleInterval)
+    },[navigate])
     return (
       <div className={`relative w-full h-screen `}>
         <img src={`./src/assets/images/${currentImg}.jpg`} className="w-full h-full"></img>

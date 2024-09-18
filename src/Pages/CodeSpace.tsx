@@ -23,7 +23,7 @@ const CodeSpace = () =>{
       {
           navigate('/');
       }
-  },[])
+  },[navigate])
   const [theme, setTheme] = useState<string>(() => {
     const temp = localStorage.getItem("theme");
     return temp ? temp : "dracula";
@@ -34,12 +34,7 @@ const CodeSpace = () =>{
   const [gameOver,setGameOver] = useState<boolean>(false);
   useEffect(()=>{
     const FectchData = async () =>{
-      const t = localStorage.getItem("gameover") || "false"
-      if(t==="true")
-      {
-        navigate("/thankYou")
-      }
-      const temp:Level[] = JSON.parse(localStorage.getItem("UselevelData")!);
+              const temp:Level[] = JSON.parse(localStorage.getItem("UselevelData")!);
       if(temp){
           setLevelData(temp)
       } 
@@ -49,22 +44,26 @@ const CodeSpace = () =>{
         setLevelData(getdata);
         localStorage.setItem("UselevelData",JSON.stringify(getdata));
       }
-      
     }
     FectchData();
-  },[gameOver])
+  },[navigate])
   useEffect(() => {
     const temp:number = parseInt(localStorage.getItem("LevelIndicator")!);
+    if(levelData) {
+    
     if (temp) {
+
+      if(temp==levelData.length) navigate("/thankYou")
       // Use the stored question index
+      if(!(temp<levelData.length)) return
       levelData && setCurrentLevel(levelData[temp])
-      
     } else {
       // Generate a new random number and store it
       localStorage.setItem("LevelIndicator","0");
       levelData && setCurrentLevel(levelData[0]);
     }
     levelData && localStorage.setItem("MaxLength",levelData?.length.toString());
+  }
   }, [levelData,currentLevel]);
   const [showSlide, setShowSlide] = useState<boolean>(false);
   const [currenQuestionIndex, setCurrentQuestionIndex] = useState<number>(1);
@@ -110,18 +109,22 @@ const CodeSpace = () =>{
       }
       else
       {
-        console.log("triggered")
-        const codeData:answerType = JSON.parse(localStorage.getItem("codeData")!)
-        await addCodeData(codeData);
+        
         localStorage.setItem("LevelIndicator",(level+1).toString());
         localStorage.setItem("gameover","true");
-        setGameOver(true);
+        setCurrentLevel(null)
+        setGameOver(true)
+        const codeData:answerType = JSON.parse(localStorage.getItem("codeData")!)
+        try {
+          await addCodeData(codeData);
+          navigate('/thankYou', { replace: true });
+        } catch (error) {
+          
+        }
+        console.log("gameovered successfully")
       }
     }
   }
-  useEffect(()=>{
-      navigate('/thankYou')
-  },[gameOver])
 
   return (
     <div>

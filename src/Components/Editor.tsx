@@ -56,7 +56,7 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
       {
         navigate('/thankYou')
       }
-  },[])
+  },[navigate])
   
   const [timer,setTimer] = useState<number>(()=>{
     const temp = localStorage.getItem("timer")
@@ -91,6 +91,7 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
     const remainingSeconds = seconds % 60;
     return `${minutes}m ${remainingSeconds}s`;
   };
+  
   useEffect(()=>{
     if(!timerRunning && gameOver) return
       const handleTimer = setInterval(()=>{
@@ -107,27 +108,25 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
         localStorage.setItem("gameover","true");
         navigate('/thankYou')
       }
-
+      const handleDatasubmit = async ()=>{
+        console.log(getCurrentLevelIndex())
+        await increaseLevel()
+        const temp = parseInt(localStorage.getItem("MaxLength")!);
+        if(getCurrentLevelIndex()<temp)
+        {
+          setCurrentLevelIndex(getCurrentLevelIndex());
+        }
+        
+      }
       if(currentLevel.questions.length === getScore())
       {
           console.log("IncreasedLevel")
-          increaseLevel()
-          setCurrentLevelIndex(getCurrentLevelIndex());
+          
+          handleDatasubmit()
       }
-
-      const temp = getCurrentLevelIndex();
-      const m = parseInt(localStorage.getItem("MaxLength")!) || 0;
-      if(temp<m)
-      {
-
-      }else{
-        navigate('/thankYou')
-      }
-
-
-      
       return() => clearInterval(handleTimer)      
-  },[timer,timerRunning,currentLevelIndex,gameOver])
+  },[timer,timerRunning,gameOver,currentLevelIndex])
+
   const getScore = ():number =>{
       const currentLevel = parseInt(localStorage.getItem("LevelIndicator")!) || 0;
       if (codeData && codeData.finalAnswer && codeData.finalAnswer[currentLevel]) {
@@ -262,12 +261,8 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
   return (
     <div className={`ace-${theme ? theme : "dracula"} relative h-screen p-5 overflow-hidden`}>
       <p className="text-4xl font-bold text-center">CODING CONTEST</p>
-      {codeData && 
- codeData.finalAnswer &&
- codeData.finalAnswer[currentLevelIndex] &&
- codeData.finalAnswer[currentLevelIndex].answer &&
- codeData.finalAnswer[currentLevelIndex].answer[questionNo - 1] &&
- codeData.finalAnswer[currentLevelIndex].answer[questionNo - 1].answered && (
+      {
+   codeData?.finalAnswer[currentLevelIndex]?.answer[questionNo - 1]?.answered && (
   <div className="z-40 absolute inset-0 flex-col flex justify-center items-center bg-black bg-opacity-50 text-white text-3xl font-semibold">
     <Lottie animationData={successAni} loop={true} className="w-96"/>
     <p>{messages[generateRandom(messages.length)]}</p>
