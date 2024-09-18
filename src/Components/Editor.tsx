@@ -28,7 +28,7 @@ interface EditorProps {
   questionNo:number;
   clearOutput:() => void;
   currentLevel:Level,
-  increaseLevel: () => Promise<boolean>,
+  increaseLevel: () => void,
   
 }
 export const formatTime = (seconds: number) => {
@@ -50,7 +50,7 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
   });
   const [codeData,setCodeData] = useState<answerType | null>(null);
   useEffect(()=>{
-      const temp = localStorage.getItem("gameOver") || "false";
+      const temp = localStorage.getItem("gameover") || "false";
       const timer = localStorage.getItem("timer") || "60";
       if(temp !== "false" || timer === "0")
       {
@@ -104,22 +104,15 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
         setTimerRunning(false);
         setGameOver(true);
         localStorage.setItem("timer","0");
-        localStorage.setItem("gameOver","true");
+        localStorage.setItem("gameover","true");
         navigate('/thankYou')
       }
 
       if(currentLevel.questions.length === getScore())
       {
           console.log("IncreasedLevel")
-          const temp:Promise<boolean> = increaseLevel()
+          increaseLevel()
           setCurrentLevelIndex(getCurrentLevelIndex());
-          if(Boolean(temp))
-          {
-            setTimerRunning(false);
-            setGameOver(true);
-            localStorage.setItem("gameOver","true");
-            navigate('/thankYou');
-          }
       }
 
 

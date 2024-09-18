@@ -6,7 +6,7 @@ import { Level } from "../types/QuestionType";
 interface CompilerProps{
   questionNo:number,
   currentLevelData:Level, 
-  increaseLevel: () => Promise<boolean>,
+  increaseLevel: () => void,
 }
 export interface ResultType {
   output:string,  

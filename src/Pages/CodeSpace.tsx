@@ -31,6 +31,7 @@ const CodeSpace = () =>{
   const [showQuestion,setShowQuestion] = useState<boolean>(false);
   const [levelData, setLevelData] = useState<Level[] | null>(null);
   const [currentLevel,setCurrentLevel] = useState<Level | null>(null);
+  const [gameOver,setGameOver] = useState<boolean>(false);
   useEffect(()=>{
     const FectchData = async () =>{
       const t = localStorage.getItem("gameover") || "false"
@@ -50,7 +51,7 @@ const CodeSpace = () =>{
       }
     }
     FectchData();
-  },[])
+  },[gameOver])
   useEffect(() => {
     const temp:number = parseInt(localStorage.getItem("LevelIndicator")!);
     if (temp) {
@@ -96,7 +97,7 @@ const CodeSpace = () =>{
     return currentLevel?.questions[currenQuestionIndex-1]
   }
 
-  const increaseLevel = async ():Promise<boolean> =>{
+  const increaseLevel = async () =>{
     let level:number = getCurrentLevelIndex();
     console.log("triggered")
     if(levelData){
@@ -104,21 +105,21 @@ const CodeSpace = () =>{
         level++;
         setCurrentLevel(levelData[level])
         localStorage.setItem("LevelIndicator",(level).toString());
-        return false
       }
       else
       {
         console.log("triggered")
         const codeData:answerType = JSON.parse(localStorage.getItem("codeData")!)
-        localStorage.setItem("LevelIndicator",(level+1).toString());
         await addCodeData(codeData);
+        localStorage.setItem("LevelIndicator",(level+1).toString());
         localStorage.setItem("gameover","true");
-        return true
-        
+        setGameOver(true);
       }
     }
-    return false
   }
+  useEffect(()=>{
+      navigate('/thankYou')
+  },[gameOver])
 
   return (
     <div>
