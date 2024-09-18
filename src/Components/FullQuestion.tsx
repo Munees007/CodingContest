@@ -1,9 +1,8 @@
 import React from "react";
 import { CgClose } from "react-icons/cg";
-import { question } from "../Pages/CodeSpace";
-
+import {questionType } from "../types/QuestionType";
 interface FullQuestionProps {
-  getCurrentQuestion?: () => question | undefined;
+  getCurrentQuestion?: () => questionType | undefined;
   theme: string;
   setShowQuestion: (value: React.SetStateAction<boolean>) => void;
 }

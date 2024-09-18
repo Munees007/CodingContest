@@ -1,10 +1,10 @@
 import { VscCode } from "react-icons/vsc";
 import '../Modules/themes';
-import { question } from "../Pages/CodeSpace";
+import { questionType } from "../types/QuestionType";
 
 interface QuestionProps{
     questionNo:number,
-    question:question,
+    question:questionType,
     theme:string,
     setQuestion:(value:number,status:boolean) =>void,
     setShowQuestion: (value: React.SetStateAction<boolean>) => void
