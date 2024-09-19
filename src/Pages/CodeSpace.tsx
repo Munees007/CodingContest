@@ -127,7 +127,7 @@ const CodeSpace = () =>{
   }
 
   return (
-    <div>
+    <div >
       { currentLevel ? (
       <div className={`ace-${theme} relative w-full`}>
         <VscArrowRight

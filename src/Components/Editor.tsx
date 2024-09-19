@@ -93,8 +93,8 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
         return parseInt(temp)
       }
       else{
-        localStorage.setItem("breakTime",(60*15).toString());
-        return 60*15
+        localStorage.setItem("breakTime",(10).toString());
+        return 10
       }
   })
   const formatTime = (seconds: number) => {
@@ -104,8 +104,8 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
   };
   const [breakTimer,setBreakTimer] = useState<boolean>(()=>{
     const temp = localStorage.getItem("breakTimer")
-    if(temp && temp==="true"){
-      return Boolean(temp)
+    if(temp==="true"){
+      return true
     }
     else{
       localStorage.setItem("breakTimer","false")
@@ -113,21 +113,18 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
     }
   })
   useEffect(()=>{
+    if(!breakTimer) return 
     let handleBreakTimer:NodeJS.Timeout;
-    if(breakTimer)
-      {
           handleBreakTimer = setInterval(()=>{
             setBreakTime((preValue)=> preValue-1)
             localStorage.setItem("breakTime",breakTime.toString())
           },1000)
-      }
-      
-      if(breakTime===0)
+      if(breakTime<=0)
       {
-        
+        localStorage.setItem("breakTime","0")
         localStorage.setItem("breakTimer","false");
         setTimerRunning(true);
-        setBreakTimer(true);
+        setBreakTimer(false);
       }
     
 
@@ -152,6 +149,7 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
       }
       if(timer === 60)
       {
+        setTimer(timer-2)
         localStorage.setItem("timer",(timer-2).toString())
         localStorage.setItem("breakTimer","true");
         setTimerRunning(false);
@@ -309,7 +307,16 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
   }  
   if(breakTimer)
     {
-      return <div className="w-full h-screen"><p>Time For Break</p></div>
+      return <div className="w-full  fixed bg-[#274c77] text-black flex flex-col justify-center items-center h-screen">
+        <div className="border-8 border-black bg-[#e7ecef]  rounded-full p-20 flex justify-center items-center flex-col">
+          <p className="text-2xl uppercase font-bold font-sans">Time For Break</p>
+          <div 
+        className="flex flex-col items-center justify-center">
+            <Lottie animationData={timerAni} loop={breakTimer} className="w-72"/>
+            <p className="text-2xl uppercase font-bold font-sans">{formatTime(breakTime)}</p>
+          </div>
+        </div>
+      </div>
     }
   return (
     <div className={`ace-${theme ? theme : "dracula"} relative h-screen p-5 overflow-hidden`}>
