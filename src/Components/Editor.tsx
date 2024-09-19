@@ -64,8 +64,8 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
       return parseInt(temp)
     } 
     else{
-      localStorage.setItem("timer",(60*60).toString());
-      return 60*60; // time in seconds 
+      localStorage.setItem("timer",(60*2).toString());
+      return 60*2; // time in seconds 
     }
   })
   const [currentLevelIndex,setCurrentLevelIndex] = useState<number>(()=>{
@@ -86,13 +86,55 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
       toast.error("Type something");
     }
   };
+  const [breakTime,setBreakTime] = useState<number>(()=>{
+      const temp = localStorage.getItem("breakTime")
+      console.log(temp)
+      if(temp){
+        return parseInt(temp)
+      }
+      else{
+        localStorage.setItem("breakTime",(60*15).toString());
+        return 60*15
+      }
+  })
   const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}m ${remainingSeconds}s`;
   };
-  
+  const [breakTimer,setBreakTimer] = useState<boolean>(()=>{
+    const temp = localStorage.getItem("breakTimer")
+    if(temp && temp==="true"){
+      return Boolean(temp)
+    }
+    else{
+      localStorage.setItem("breakTimer","false")
+      return false
+    }
+  })
   useEffect(()=>{
+    let handleBreakTimer:NodeJS.Timeout;
+    if(breakTimer)
+      {
+          handleBreakTimer = setInterval(()=>{
+            setBreakTime((preValue)=> preValue-1)
+            localStorage.setItem("breakTime",breakTime.toString())
+          },1000)
+      }
+      
+      if(breakTime===0)
+      {
+        
+        localStorage.setItem("breakTimer","false");
+        setTimerRunning(true);
+        setBreakTimer(true);
+      }
+    
+
+      return ()=> clearInterval(handleBreakTimer)
+  },[breakTimer,breakTime])
+  useEffect(()=>{
+    if(!timerRunning) return
     if(!timerRunning && gameOver) return
       const handleTimer = setInterval(()=>{
           setTimer((preValue)=> preValue -1);
@@ -107,6 +149,13 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
         localStorage.setItem("timer","0");
         localStorage.setItem("gameover","true");
         navigate('/thankYou')
+      }
+      if(timer === 60)
+      {
+        localStorage.setItem("timer",(timer-2).toString())
+        localStorage.setItem("breakTimer","true");
+        setTimerRunning(false);
+        setBreakTimer(true);
       }
       const handleDatasubmit = async ()=>{
         console.log(getCurrentLevelIndex())
@@ -124,7 +173,7 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
           
           handleDatasubmit()
       }
-      return() => clearInterval(handleTimer)      
+      return() =>clearInterval(handleTimer)
   },[timer,timerRunning,gameOver,currentLevelIndex])
 
   const getScore = ():number =>{
@@ -258,6 +307,10 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
     const temp = Math.floor(Math.random() * val);
     return temp;
   }  
+  if(breakTimer)
+    {
+      return <div className="w-full h-screen"><p>Time For Break</p></div>
+    }
   return (
     <div className={`ace-${theme ? theme : "dracula"} relative h-screen p-5 overflow-hidden`}>
       <p className="text-4xl font-bold text-center">CODING CONTEST</p>
