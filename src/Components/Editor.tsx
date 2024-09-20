@@ -307,13 +307,11 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
   }  
   if(breakTimer)
     {
-      return <div className="w-full  fixed bg-[#274c77] text-black flex flex-col justify-center items-center h-screen">
-        <div className="border-8 border-black bg-[#e7ecef]  rounded-lg p-20 flex justify-center items-center flex-col">
-          <p className="text-2xl uppercase font-bold font-sans">Time For Break</p>
+      return <div className="w-full  fixed bgBreakTimer text-black flex flex-col justify-center items-center h-screen">
+        <div className="   flex justify-center items-center flex-col">
           <div 
-        className="flex flex-col items-center justify-center">
-            <Lottie animationData={timerAni} loop={breakTimer} className="w-72"/>
-            <p className="text-2xl uppercase font-bold font-sans">{formatTime(breakTime)}</p>
+        className="flex flex-col bgBreakTimerC h-60 w-60 items-center justify-center">
+            <p className="text-2xl text-cyan-300 uppercase font-bold font-sans">{formatTime(breakTime)}</p>
           </div>
         </div>
       </div>

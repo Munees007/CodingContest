@@ -5,7 +5,15 @@
 body{
   overflow: hidden;
 }
-
+.bgBreakTimer{
+  background-image: url('./assets/images/Leonardo_Phoenix_A_futuristic_hightech_illustration_of_a_futur_2-Photoroom.png');
+  background-size: contain;
+}
+.bgBreakTimerC
+{
+  background-image: url('./assets/images/image-removebg-preview.png');
+  background-size: cover;
+}
 @layer utilities {
     @keyframes scroll {
       0% {
