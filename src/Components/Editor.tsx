@@ -93,8 +93,8 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
         return parseInt(temp)
       }
       else{
-        localStorage.setItem("breakTime",(10).toString());
-        return 10
+        localStorage.setItem("breakTime",(60*15).toString());
+        return 60*15
       }
   })
   const formatTime = (seconds: number) => {
@@ -123,6 +123,8 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
       {
         localStorage.setItem("breakTime","0")
         localStorage.setItem("breakTimer","false");
+        setTimer(timer-2);
+        localStorage.setItem("timer",(timer-2).toString())
         setTimerRunning(true);
         setBreakTimer(false);
       }
@@ -149,8 +151,6 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
       }
       if(timer === 60)
       {
-        setTimer(timer-2)
-        localStorage.setItem("timer",(timer-2).toString())
         localStorage.setItem("breakTimer","true");
         setTimerRunning(false);
         setBreakTimer(true);
@@ -308,7 +308,7 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
   if(breakTimer)
     {
       return <div className="w-full  fixed bg-[#274c77] text-black flex flex-col justify-center items-center h-screen">
-        <div className="border-8 border-black bg-[#e7ecef]  rounded-full p-20 flex justify-center items-center flex-col">
+        <div className="border-8 border-black bg-[#e7ecef]  rounded-lg p-20 flex justify-center items-center flex-col">
           <p className="text-2xl uppercase font-bold font-sans">Time For Break</p>
           <div 
         className="flex flex-col items-center justify-center">
