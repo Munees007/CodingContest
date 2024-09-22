@@ -6,28 +6,36 @@ import "../Modules/themes";
 import { getScore } from "./DisplayUsers";
 import { formatTime } from "./Editor";
 import { useEffect } from "react";
+import { Level } from "../types/QuestionType";
+import { BiLeftArrow } from "react-icons/bi";
 
+type stateType = {
+  value:userDataType,
+  levelData:Level[]
+}
 export default function Profile() {
   const location = useLocation();
-  const state: userDataType = location.state || {};
+  const state: stateType = location.state || {};
 
   useEffect(() => {
     console.log(state);
   }, [state]);
 
   return (
-    <div className="bg-blue-300 w-full h-screen p-3 overflow-auto">
+    <div className="bg-[#E5E5E5] w-full h-screen p-3 overflow-auto">
+      <BiLeftArrow size={25} onClick={()=>{history.back()}}/>
+      <p className="font-Roboto text-center text-4xl uppercase font-bold mb-2">Profile</p>
       <div
-        className="bg-blue-600 border-2 border-black rounded-md
-                    shadow-md shadow-black w-full text-white flex justify-around py-2"
+        className="bg-white border-2 border-black rounded-md
+                    shadow-md shadow-black w-full text-black flex justify-around py-2"
       >
-        <p>{state.formData?.rollNumber}</p>
-        <p>{state.formData?.name}</p>
-        <p>{state.formData?.email}</p>
-        {state.codeData ? (
+        <p>{state?.value?.formData?.rollNumber}</p>
+        <p>{state?.value?.formData?.name}</p>
+        <p>{state?.value?.formData?.email}</p>
+        {state?.value?.codeData ? (
           <>
-            <p>{getScore(state)}</p>
-            <p>{formatTime(60 * 60 - state.codeData.timeLeft!)}</p>
+            <p>{getScore(state.value)}</p>
+            <p>{formatTime(60 * 60 - state?.value?.codeData?.timeLeft!)}</p>
           </>
         ) : (
           <>
@@ -37,18 +45,35 @@ export default function Profile() {
         )}
       </div>
       <div className="whitespace-pre grid mt-5 grid-cols-1 gap-3">
-        {state.codeData ? (
-          state.codeData.finalAnswer.map((level, levelIndex) => (
-            <div key={levelIndex} className="bg-blue-600 border-2 w-full h-full border-black rounded-md p-3 text-white font-mono">
-              <p>Level:{levelIndex}</p>
+        {state?.value?.codeData ? (
+          state?.value?.codeData.finalAnswer.map((level, levelIndex) => (
+            <div key={levelIndex} className="bg-white border-2 w-full h-full border-black rounded-md p-3 text-black font-mono">
+              <p className="font-mono font-bold text-3xl">Level:{levelIndex}</p>
               {level.answer.map((answer, answerIndex) => (
-                <div key={answerIndex}>
-                  <p className="font-bold text-2xl">Language: {answer.language}</p>
+                <div key={answerIndex} className="bg-slate-400 p-3 mt-2 rounded-lg">
+                  <p className="text-center font-mono font-bold text-3xl">Question:{answerIndex+1}</p>
+                  <div>
+                    <p className="font-mono font-bold text-2xl">Title:</p>
+                  <p className="font-mono  text-xl ml-3">{state?.levelData[levelIndex]?.questions[answerIndex]?.title}</p>
+                  </div>
+                  <div>
+                    <p className="font-mono font-bold text-2xl">Problem Statement:</p>
+                  <p className="font-mono  text-xl ml-3">{state?.levelData[levelIndex]?.questions[answerIndex]?.content.problem}</p>
+                  </div>
+                  <div>
+                    <p className="font-mono font-bold text-2xl">Input:</p>
+                  <p className="font-mono  text-xl ml-3">{state?.levelData[levelIndex]?.questions[answerIndex]?.content.input}</p>
+                  </div>
+                  <div>
+                    <p className="font-mono font-bold text-2xl">Output:</p>
+                  <p className="font-mono  text-xl ml-3">{state?.levelData[levelIndex]?.questions[answerIndex]?.content.output}</p>
+                  </div>
+                  <p className="font-bold text-2xl">Language: {answer?.language}</p>
                   <div className="flex flex-col">
                     <p className="font-bold text-xl">Code:</p>
                     <AceEditor
                       width="100%"
-                      mode={`${answer.language === "cpp" ? "c_cpp" : answer.language}`}
+                      mode={`${answer.language === "cpp" ? "c_cpp" : answer?.language}`}
                       fontSize={18}
                       setOptions={{
                         enableBasicAutocompletion: true,
@@ -58,12 +83,12 @@ export default function Profile() {
                       readOnly
                       className="rounded-md border-2 border-gray-200 shadow-md shadow-black"
                       theme="ace-dawn"
-                      value={answer.code}
+                      value={answer?.code}
                     />
                   </div>
                   <div className="flex flex-col mt-2">
                     <p className="font-bold text-xl">Output:</p>
-                    <p className="mt-2 font-semibold">{answer.output}</p>
+                    <p className="mt-2 font-semibold">{answer?.output}</p>
                   </div>
                 </div>
               ))}

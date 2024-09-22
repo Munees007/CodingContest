@@ -24,7 +24,8 @@ export default {
         }
       },
       fontFamily:{
-        Orbiton:['Orbitron', 'sans-serif']
+        Orbiton:['Orbitron', 'sans-serif'],
+        Roboto:['Roboto', 'sans-serif']
       }
     },
   },

@@ -11,14 +11,14 @@ interface DisplayLevelProps{
 }
 const DisplayLevel:React.FC<DisplayLevelProps> = ({data,index,onDelete}) =>{
     return (
-        <div className="w-full h-fit  p-3  bg-[#dabfff] border-2 border-black shadow-md shadow-white rounded-md">
+        <div className="w-full   p-3  bg-[#2f81edaf] border-2 border-black shadow-md shadow-white rounded-md">
             <div className="w-full flex justify-between items-center">
                 <p className="text-4xl text-black font-mono font-bold uppercase">Level:{index}</p>
                 <p className="text-xl text-black font-mono font-bold uppercase">Total Questions: {data.questions.length}</p>
             </div>
             {
                 data?.questions?.map((value,index)=>(
-                    <div key={index} className="flex flex-col relative gap-5 w-full h-fit p-3 mt-3  overflow-auto bg-[#9f89be] border-2 border-black shadow-md shadow-white rounded-md">
+                    <div key={index} className="flex flex-col relative gap-5 w-full h-fit p-3 mt-3 bg-gray-200 border-2 border-black rounded-md">
                         <p className="text-3xl text-center text-black font-mono font-bold uppercase">Question {index+1}</p>
                         <RiDeleteBin6Fill size={30} className="cursor-pointer absolute right-2" onClick={()=>onDelete(index)}/>
                         <div>
@@ -36,32 +36,6 @@ const DisplayLevel:React.FC<DisplayLevelProps> = ({data,index,onDelete}) =>{
                 <div>
                     <p className="text-xl font-semibold font-mono">Output:</p>
                     <p className="text-2xl font-mono ml-2 mt-2 font-semibold">{value.content.input}</p>
-                </div>
-                <div className="flex flex-col gap-5 border-2 border-black rounded-md p-5 bg-[#2c2a4a] text-white">
-                    <p className="text-xl font-semibold font-mono">Example1:</p>
-                    <div className="bg-[#907ad6] p-5 border border-white shadow-md shadow-[#907ad6] rounded-md flex flex-col gap-5">
-                        <div className="ml-5">
-                            <p className="text-xl font-semibold font-mono">Input:</p>
-                            <p className="text-2xl font-mono ml-2 mt-2 font-semibold">{value.content.example1.input}</p>
-                        </div>
-                        <div className="ml-5">
-                            <p className="text-xl font-semibold font-mono">Output:</p>
-                            <p className="text-2xl font-mono ml-2 mt-2 font-semibold">{value.content.example1.output}</p>
-                        </div>
-                    </div>
-                </div>
-                <div className="flex flex-col gap-5 border-2 border-black rounded-md p-5 bg-[#2c2a4a] text-white">
-                    <p className="text-xl font-semibold font-mono">Example2:</p>
-                    <div className="bg-[#907ad6] p-5 border border-white shadow-md shadow-[#907ad6] rounded-md flex flex-col gap-5">
-                        <div className="ml-5">
-                            <p className="text-xl font-semibold font-mono">Input:</p>
-                            <p className="text-2xl font-mono ml-2 mt-2 font-semibold">{value.content.example2.input}</p>
-                        </div>
-                        <div className="ml-5">
-                            <p className="text-xl font-semibold font-mono">Output:</p>
-                            <p className="text-2xl font-mono ml-2 mt-2 font-semibold">{value.content.example2.output}</p>
-                        </div>
-                    </div>
                 </div>
                 <div className="">
                         <p className="text-xl font-semibold font-mono">Answer:</p>

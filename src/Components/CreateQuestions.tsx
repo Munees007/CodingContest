@@ -46,7 +46,7 @@ const CreateQuestions = () =>{
         setSelectedLevel(Number(e.target.value));
     };
     return(
-        <div className="w-full h-[43rem] p-3 overflow-auto bg-[#dabfff] border-2 border-black shadow-md shadow-white rounded-md">
+        <div className="w-full  p-3">
             <div className="relative">
                 <p className="text-2xl uppercase text-center font-bold">Question Creation</p>
                 <select value={selectedLevel} onChange={handleSelectChange} className="absolute right-0 text-sm border-2 border-black shadow-md shadow-black rounded-md">
@@ -76,44 +76,14 @@ const CreateQuestions = () =>{
                     <input type="text" className="pl-3 w-full h-10 border border-black rounded-md mt-2
                     shadow-md shadow-black" required value={data[3]||""} onChange={handleChange(3)}/>
                 </div>
-                <div className="flex flex-col gap-5 border-2 border-black rounded-md p-5 bg-[#2c2a4a] text-white">
-                    <p className="text-xl font-semibold font-mono">Example1:</p>
-                    <div className="bg-[#907ad6] p-5 border border-white shadow-md shadow-[#907ad6] rounded-md flex flex-col gap-5">
-                        <div className="ml-5">
-                            <p className="text-xl font-semibold font-mono">Input:</p>
-                            <input type="text" className="pl-3 w-full h-10 border text-black border-black rounded-md mt-2
-                            shadow-md shadow-black" value={data[4]||""} onChange={handleChange(4)}/>
-                        </div>
-                        <div className="ml-5">
-                            <p className="text-xl font-semibold font-mono">Output:</p>
-                            <input type="text" className="pl-3 w-full h-10 text-black border border-black rounded-md mt-2
-                            shadow-md shadow-black" value={data[5]||""} onChange={handleChange(5)}/>
-                        </div>
-                    </div>
-                </div>
-                <div className="flex flex-col gap-5 border-2 border-black rounded-md p-5 bg-[#2c2a4a] text-white">
-                    <p className="text-xl font-semibold font-mono">Example2:</p>
-                    <div className="bg-[#907ad6] p-5 border border-white shadow-md shadow-[#907ad6] rounded-md flex flex-col gap-5">
-                        <div className="ml-5">
-                            <p className="text-xl font-semibold font-mono">Input:</p>
-                            <input type="text" className="pl-3 w-full h-10 text-black border border-black rounded-md mt-2
-                            shadow-md shadow-black" value={data[6]||""} onChange={handleChange(6)}/>
-                        </div>
-                        <div className="ml-5">
-                            <p className="text-xl font-semibold font-mono">Output:</p>
-                            <input type="text" className="pl-3 w-full h-10 text-black border border-black rounded-md mt-2
-                            shadow-md shadow-black" value={data[7]||""} onChange={handleChange(7)}/>
-                        </div>
-                    </div>
-                </div>
                 <div className="">
                         <p className="text-xl font-semibold font-mono">Answer:</p>
                         <input type="text" className="pl-3 w-full h-10 border border-black rounded-md mt-2
                         shadow-md shadow-black" required value={data[8]||""} onChange={handleChange(8)}/>
                 </div>
-                <button type="submit" className="border-2 border-black rounded-md p-2 text-2xl font-mono bg-[#2c2a4a] text-white">SUBMIT</button>
+                <button type="submit" className="border-2 border-black rounded-md p-2 text-2xl font-mono bg-[#2F80ED] hover:bg-[#2f81edaf] text-black">SUBMIT</button>
             </form>
-            <ToastContainer position="top-left"/>
+            <ToastContainer/>
         </div>
     )
 }

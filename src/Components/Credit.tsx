@@ -1,8 +1,9 @@
 const Credits = () => {
     return (
-        <div className="flex justify-center w-full items-center h-fit overflow-hidden text-white">
+        <div className="flex bg-white justify-center w-[50rem] items-center h-fit p-3 rounded-lg overflow-hidden text-black">
             <div className="w-full max-w-3xl text-center">
-                <h1 className="text-4xl font-bold mb-8">Coding Contest</h1>
+            <h1 className="text-4xl font-bold mb-8">Department of Computer Applications</h1>
+                <h2 className="text-4xl font-bold mb-8">Intra Hackathon - 2k24</h2>
                 <h2 className="text-2xl mb-4 font-bold">Developed By P. Muneeswaran,</h2>
                 <p className="text-xl mb-2 font-bold">Oragnised By R. Karthik Balan</p>
                 <p className="text-xl mb-2">Technologies used:</p>

@@ -6,15 +6,17 @@ interface QuestionProps{
     questionNo:number,
     question:questionType,
     theme:string,
-    setQuestion:(value:number,status:boolean) =>void,
-    setShowQuestion: (value: React.SetStateAction<boolean>) => void
+    setQuestion:(value: number, status: boolean, useLevel: boolean, level: number) =>void,
+    setShowQuestion: (value: React.SetStateAction<boolean>) => void,
+    level:number,
+    useLevel:boolean
 }
-export default function Question({questionNo,question,setQuestion,theme,setShowQuestion}:QuestionProps) {
+export default function Question({questionNo,question,setQuestion,theme,level,useLevel,setShowQuestion}:QuestionProps) {
     const handleQuestion = ()=>{
-        setQuestion(questionNo,false);
+        setQuestion(questionNo,false,useLevel,level);
     }
     const handleFullQuestion = () =>{
-        setQuestion(questionNo,true);
+        setQuestion(questionNo,true,useLevel,level);
     }
     return (
     <div className={`ace-${theme ? theme : "dracula"} m-2  rounded-md p-2 border-2  font-mono flex flex-col`}>

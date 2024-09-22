@@ -51,7 +51,7 @@ const Home = () =>{
           </div>
         )}
         {backGround.indexOf(currentImg) === 2 && (
-          <div className="absolute  inset-0 animate-scroll  flex items-center justify-center">
+          <div className="absolute bg-black/50 inset-0   flex items-center justify-center">
               <Credits/>
           </div>
         )}

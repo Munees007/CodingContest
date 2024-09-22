@@ -13,7 +13,6 @@ import empty from '../assets/animations/codeStart.json';
 import error1 from "../assets/animations/error1.json";
 import { ResultType } from "./Compiler";
 import { FaTrash } from "react-icons/fa";
-import successAni from "../assets/animations/sucess1.json";
 import timerAni from "../assets/animations/timer1.json";
 import { useNavigate } from "react-router-dom";
 import { answerType, Level } from "../types/QuestionType";
@@ -29,18 +28,24 @@ interface EditorProps {
   clearOutput:() => void;
   currentLevel:Level,
   increaseLevel: () => void,
-  
+  useLevel:boolean,
+  levelIndex:number
 }
 export const formatTime = (seconds: number) => {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
   return `${minutes}m ${remainingSeconds}s`;
 };
-const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOutput,currentLevel ,increaseLevel}) => {
+const Editor: React.FC<EditorProps> = ({useLevel,levelIndex, ExecuteCode, Result,questionNo,clearOutput,currentLevel ,increaseLevel}) => {
 
   const [code, setCode] = useState<string>(()=>{
-    
-    return localStorage.getItem(questionNo.toString()) || "";
+    if(useLevel)
+    {
+      return localStorage.getItem("Level" + levelIndex +questionNo.toString()) || ""
+    }
+    else{
+      return localStorage.getItem("Level" + getCurrentLevelIndex() +questionNo.toString()) || "";
+    }
   });
   const navigate = useNavigate();
   const [timerRunning,setTimerRunning] = useState<boolean>(true);
@@ -57,15 +62,15 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
         navigate('/thankYou')
       }
   },[navigate])
-  
+  const [levelIncrease,setLevelIncrease] = useState<boolean>(false);
   const [timer,setTimer] = useState<number>(()=>{
     const temp = localStorage.getItem("timer")
     if(temp){
       return parseInt(temp)
     } 
     else{
-      localStorage.setItem("timer",(60*2).toString());
-      return 60*2; // time in seconds 
+      localStorage.setItem("timer",(60*180).toString());
+      return 60*180; // time in seconds 
     }
   })
   const [currentLevelIndex,setCurrentLevelIndex] = useState<number>(()=>{
@@ -98,10 +103,12 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
       }
   })
   const formatTime = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
     const remainingSeconds = seconds % 60;
-    return `${minutes}m ${remainingSeconds}s`;
+    return `${hours}h ${minutes}m ${remainingSeconds}s`;
   };
+  
   const formatBreakTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
@@ -137,6 +144,17 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
 
       return ()=> clearInterval(handleBreakTimer)
   },[breakTimer,breakTime])
+  const handleDatasubmit = async ()=>{
+    console.log(getCurrentLevelIndex())
+    await increaseLevel()
+    const temp = parseInt(localStorage.getItem("MaxLength")!);
+    if(getCurrentLevelIndex()<temp)
+    {
+      setCurrentLevelIndex(getCurrentLevelIndex());
+    }
+    setLevelIncrease(false);
+    setCode("");
+  }
   useEffect(()=>{
     if(!timerRunning) return
     if(!timerRunning && gameOver) return
@@ -154,27 +172,17 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
         localStorage.setItem("gameover","true");
         navigate('/thankYou')
       }
-      if(timer === 60)
+      if(timer === 5400)
       {
         localStorage.setItem("breakTimer","true");
         setTimerRunning(false);
         setBreakTimer(true);
       }
-      const handleDatasubmit = async ()=>{
-        console.log(getCurrentLevelIndex())
-        await increaseLevel()
-        const temp = parseInt(localStorage.getItem("MaxLength")!);
-        if(getCurrentLevelIndex()<temp)
-        {
-          setCurrentLevelIndex(getCurrentLevelIndex());
-        }
-        
-      }
+      
       if(currentLevel.questions.length === getScore())
       {
           console.log("IncreasedLevel")
-          
-          handleDatasubmit()
+          setLevelIncrease(true);
       }
       return() =>clearInterval(handleTimer)
   },[timer,timerRunning,gameOver,currentLevelIndex])
@@ -297,39 +305,49 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
     save();
   }
   useEffect(()=>{
-    const storedCode = localStorage.getItem("Level" + getCurrentLevelIndex() +questionNo.toString()) || "";
+    
+    let storedCode;
+    if(useLevel)
+      {
+        storedCode =  localStorage.getItem("Level" + levelIndex +questionNo.toString()) || ""
+      }
+      else{
+        storedCode =  localStorage.getItem("Level" + getCurrentLevelIndex() +questionNo.toString()) || "";
+      }
+    console.log(storedCode)
     setCode(storedCode);
-  },[questionNo])
-  const messages = [
-    "Well done! You've successfully conquered another coding question!",
-    "Nice work! One more coding puzzle down, keep the momentum going!",
-    "Fantastic! You've completed another step towards victory!",
-    "You're on fire! Another coding challenge solved, just a few more to go!"
-  ];
-  const generateRandom = (val:number):number =>{
-    const temp = Math.floor(Math.random() * val);
-    return temp;
-  }  
+  },[questionNo,useLevel])
+  // const messages = [
+  //   "Well done! You've successfully conquered another coding question!",
+  //   "Nice work! One more coding puzzle down, keep the momentum going!",
+  //   "Fantastic! You've completed another step towards victory!",
+  //   "You're on fire! Another coding challenge solved, just a few more to go!"
+  // ];
+  // const generateRandom = (val:number):number =>{
+  //   const temp = Math.floor(Math.random() * val);
+  //   return temp;
+  // }  
   if(breakTimer)
     {
       return <div className="w-full fixed bgBreakTimer text-black flex flex-col justify-center items-center h-screen">
+          <p className="text-center font-semibold p-2 absolute top-[27rem] text-2xl text-white bg-black/70 rounded-lg">Halfway through, it's time to rest,  
+          <br/>15 minutes to recharge and do your best!</p>
           <div 
         className="absolute top-36 flex flex-col bgBreakTimerC h-72 w-72 items-center justify-center">
-            <p className="text-4xl mt-5 text-cyan-300 uppercase font-bold font-Orbiton">{formatBreakTime(breakTime)}</p>
+            <p className="text-4xl  mt-8 mr-4 text-cyan-300 uppercase font-bold font-Orbiton">{formatBreakTime(breakTime)}</p>
           </div>
       </div>
     }
   return (
-    <div className={`ace-${theme ? theme : "dracula"} relative h-screen p-5 overflow-hidden`}>
+    <div className={`ace-${theme ? theme : "dracula"} ${useLevel ? "pointer-events-none" :""} ${codeData?.finalAnswer[currentLevelIndex]?.answer[questionNo-1]?.answered ? "pointer-events-none" : ""} relative h-screen p-5 overflow-hidden`}>
       <p className="text-4xl font-bold text-center">CODING CONTEST</p>
       {
-   codeData?.finalAnswer[currentLevelIndex]?.answer[questionNo - 1]?.answered && (
-  <div className="z-40 absolute inset-0 flex-col flex justify-center items-center bg-black bg-opacity-50 text-white text-3xl font-semibold">
-    <Lottie animationData={successAni} loop={true} className="w-96"/>
-    <p>{messages[generateRandom(messages.length)]}</p>
-  </div>
-)}
-
+        codeData?.finalAnswer[currentLevelIndex]?.answer[questionNo-1]?.answered && <p className="text-xl text-green-500 uppercase font-bold absolute top-5 right-10">completed</p>
+      }
+      {
+        levelIncrease && 
+          <button className="absolute bottom-10 bg-green-600 w-24 h-10 rounded-md cursor-pointer pointer-events-auto right-96" onClick={handleDatasubmit}>next Level</button>
+      }
       <div className="flex gap-4 mt-6">
         <DropDown
           options={themes}
