@@ -22,6 +22,9 @@ export default {
               transform:'scale(0.8)'
             }
         }
+      },
+      fontFamily:{
+        Orbiton:['Orbitron', 'sans-serif']
       }
     },
   },

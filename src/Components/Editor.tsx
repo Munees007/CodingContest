@@ -102,6 +102,11 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
     const remainingSeconds = seconds % 60;
     return `${minutes}m ${remainingSeconds}s`;
   };
+  const formatBreakTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds}`;
+  };
   const [breakTimer,setBreakTimer] = useState<boolean>(()=>{
     const temp = localStorage.getItem("breakTimer")
     if(temp==="true"){
@@ -307,13 +312,11 @@ const Editor: React.FC<EditorProps> = ({ ExecuteCode, Result,questionNo,clearOut
   }  
   if(breakTimer)
     {
-      return <div className="w-full  fixed bgBreakTimer text-black flex flex-col justify-center items-center h-screen">
-        <div className="   flex justify-center items-center flex-col">
+      return <div className="w-full fixed bgBreakTimer text-black flex flex-col justify-center items-center h-screen">
           <div 
-        className="flex flex-col bgBreakTimerC h-60 w-60 items-center justify-center">
-            <p className="text-2xl text-cyan-300 uppercase font-bold font-sans">{formatTime(breakTime)}</p>
+        className="absolute top-36 flex flex-col bgBreakTimerC h-72 w-72 items-center justify-center">
+            <p className="text-4xl mt-5 text-cyan-300 uppercase font-bold font-Orbiton">{formatBreakTime(breakTime)}</p>
           </div>
-        </div>
       </div>
     }
   return (
