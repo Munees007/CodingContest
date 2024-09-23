@@ -44,7 +44,7 @@ const Home = () =>{
     },[navigate])
     return (
       <div className={`relative w-full h-screen `}>
-        <img src={`./src/assets/images/${currentImg}.jpg`} className="w-full h-full"></img>
+        <img src={`/assets/images/${currentImg}.jpg`} className="w-full h-full"></img>
         {backGround.indexOf(currentImg) === 1 && (
           <div className={`absolute bg-black/60 inset-0 flex items-center justify-center `}>
             <Form/>

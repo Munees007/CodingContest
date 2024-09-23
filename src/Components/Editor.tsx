@@ -98,8 +98,8 @@ const Editor: React.FC<EditorProps> = ({useLevel,levelIndex, ExecuteCode, Result
         return parseInt(temp)
       }
       else{
-        localStorage.setItem("breakTime",(60*15).toString());
-        return 60*15
+        localStorage.setItem("breakTime",(60*0).toString());
+        return 60*0
       }
   })
   const formatTime = (seconds: number) => {
@@ -436,11 +436,11 @@ const Editor: React.FC<EditorProps> = ({useLevel,levelIndex, ExecuteCode, Result
       <div className="flex w-full">
       <div className="flex w-full mt-6">
         <div className="flex  items-center w-fit z-30  px-5 gap-5" style={{border:"2px solid",borderRadius:"8px"}}>
-          <img src="./src/assets/images/3.jpg" className="w-14 rounded-full shadow-sm shadow-black border-2 border-black"></img>
+          <img src="/assets/images/3.jpg" className="w-14 rounded-full shadow-sm shadow-black border-2 border-black"></img>
           <div className="flex flex-col items-center">
             <p className="">Organised by</p>
             <p>R. Karthik Balan,</p>
-            <p>III BCA B.</p>
+            <p>III BCA</p>
             {/* <p>Chairman of the Softech Association.</p> */}
           </div>
         </div>
@@ -448,11 +448,11 @@ const Editor: React.FC<EditorProps> = ({useLevel,levelIndex, ExecuteCode, Result
 
       <div className="flex w-full justify-end mt-6">
         <div className="flex  items-center w-fit z-30  px-5 gap-5" style={{border:"2px solid",borderRadius:"8px"}}>
-          <img src="./src/assets/images/MwLogo.png" className="w-14"></img>
+          <img src="/assets/images/MwLogo.png" className="w-14"></img>
           <div className="flex flex-col items-center">
             <p className="">Developed by</p>
             <p>P. Muneeswaran,</p>
-            <p>III BCA B.</p>
+            <p>III BCA</p>
             {/* <p>Chairman of the Softech Association.</p> */}
           </div>
         </div>

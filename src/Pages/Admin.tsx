@@ -178,7 +178,7 @@ const Admin = () => {
               </div>
             )}
             {showPanels[1] && (
-              <div className="w-full bg-white rounded-lg p-5">
+              <div className="w-full mr-10 bg-white rounded-lg p-5">
                 <DisplayUsers
                   flag={flag!}
                   userData={userData!}
