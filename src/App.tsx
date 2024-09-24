@@ -20,7 +20,7 @@ function App() {
         event.preventDefault();
         return false;
     });
-  })
+  },[])
   return (
     <div onClick={enterFullScreen} className='overflow-hidden'>
       <Router>

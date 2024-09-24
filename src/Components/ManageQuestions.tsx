@@ -27,7 +27,7 @@ const DisplayLevel:React.FC<DisplayLevelProps> = ({data,index,onDelete}) =>{
                 </div>
                 <div>
                     <p className="text-xl  font-semibold  font-mono">Problem Statement:</p>
-                    <p className="text-2xl font-mono whitespace-pre ml-2 mt-2 font-semibold">{value.content.problem}</p>
+                    <p className="text-2xl font-mono whitespace-pre-line ml-2 mt-2 font-semibold">{value.content.problem}</p>
                 </div>
                 <div>
                     <p className="text-xl font-semibold font-mono">Input:</p>

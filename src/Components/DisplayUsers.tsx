@@ -138,12 +138,12 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
                                     <>
                                         {levelData.map((q, index) => (
                                             q?.questions?.map((_, inedx) => (
-                                                <p key={`codeLength_${index}_${inedx}`}>{getCodeLength(value.codeData.finalAnswer[index].answer[inedx].code)}</p>
+                                                <p key={`codeLength_${index}_${inedx}`}>{getCodeLength(value?.codeData?.finalAnswer[index]?.answer[inedx]?.code)}</p>
                                             ))
                                         ))}
                                         <p className="">{getTotalLine(value)}</p>
                                         <p className="">{getScore(value)}</p>
-                                        <p className="w-20">{formatTime(((60 * 180) - value.codeData.timeLeft!))}</p>
+                                        <p className="w-20">{formatTime(((60 * 180) - value?.codeData?.timeLeft!))}</p>
                                     </>
                                 ) : (
                                     <>

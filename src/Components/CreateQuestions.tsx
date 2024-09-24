@@ -63,7 +63,7 @@ const CreateQuestions = () =>{
                 </div>
                 <div>
                     <p className="text-xl font-semibold font-mono">Problem Statement:</p>
-                    <input type="text" className="pl-3 w-full h-10 border border-black rounded-md mt-2
+                    <input type="text" multiple={true} className="pl-3 w-full h-10 border border-black rounded-md mt-2
                     shadow-md shadow-black" required value={data[1]||""} onChange={handleChange(1)}/>
                 </div>
                 <div>
