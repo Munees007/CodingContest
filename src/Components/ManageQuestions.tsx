@@ -57,6 +57,7 @@ const ManageQuestions = () =>{
         const FetchData = async () =>{
             const data:Level[] = await getLevelsData();
             console.log(data)
+            console.log(data[0].levelIndex)
             if (data && data.length > 0) {
                 setLevelData(data);
                 localStorage.setItem("levelData", JSON.stringify(data));
