@@ -17,6 +17,7 @@ export type questionType = {
 }
 export type Level = {
     questions:questionType[],
+    levelIndex?:number
 }
 //answer type individual users
 type answerFormat = {

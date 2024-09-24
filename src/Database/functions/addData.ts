@@ -113,6 +113,7 @@ export async function addQuestion(newQuestion:questionType,levelIndex:number){
       // If the level doesn't exist, create it with the new question as the first entry
       const newLevelData: Level = {
         questions: [newQuestion],
+        levelIndex:levelIndex
       };
 
       // Set the new level in Firebase
@@ -157,6 +158,31 @@ export async function getLevelsData():Promise<Level[]>
             const levelArray: Level[] = Object.values(data);
             console.log(levelArray);
             return levelArray;
+        }
+        else{
+            throw new Error("nil")
+        }
+    } catch (error) {
+        throw error
+    }
+}
+export async function getLevelsObject():Promise<Level[]>
+{
+    try {
+        const fieldRef = await ref(db,"levels");
+
+        const snapshot = await get(fieldRef);
+
+        if(snapshot.exists())
+        {
+            let data = snapshot.val();
+
+            // Apply unescapeString to clean up escape sequences across the data
+            data = unescapeString(data);
+
+            // Convert the data to an array of Level objects
+            
+            return data;
         }
         else{
             throw new Error("nil")

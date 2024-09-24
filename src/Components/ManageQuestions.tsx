@@ -95,8 +95,9 @@ const ManageQuestions = () =>{
       ) : (
             <>
                 {
+                    
                     LevelData.map((value,index)=>(
-                        <DisplayLevel data={value} onDelete={(questionIndex)=>handleDelete(index,questionIndex)} index={index} key={index}/>
+                        <DisplayLevel data={value} onDelete={(questionIndex)=>handleDelete(value.levelIndex ?? index ,questionIndex)} index={index} key={index}/>
                     ))
                 }
             </>
