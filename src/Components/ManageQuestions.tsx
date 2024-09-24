@@ -14,7 +14,7 @@ const DisplayLevel:React.FC<DisplayLevelProps> = ({data,index,onDelete}) =>{
         <div className="w-full   p-3  bg-[#2f81edaf] border-2 border-black shadow-md shadow-white rounded-md">
             <div className="w-full flex justify-between items-center">
                 <p className="text-4xl text-black font-mono font-bold uppercase">Level:{index}</p>
-                <p className="text-xl text-black font-mono font-bold uppercase">Total Questions: {data.questions.length}</p>
+                <p className="text-xl text-black font-mono font-bold uppercase">Total Questions: {data?.questions?.length}</p>
             </div>
             {
                 data?.questions?.map((value,index)=>(
@@ -98,7 +98,7 @@ const ManageQuestions = () =>{
                 {
                     
                     LevelData.map((value,index)=>(
-                        <DisplayLevel data={value} onDelete={(questionIndex)=>handleDelete(value.levelIndex ?? index ,questionIndex)} index={index} key={index}/>
+                        <DisplayLevel data={value} onDelete={(questionIndex)=>handleDelete(value.levelIndex ?? index ,questionIndex)} index={value.levelIndex ?? index} key={index}/>
                     ))
                 }
             </>
