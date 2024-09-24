@@ -26,20 +26,20 @@ const DisplayLevel:React.FC<DisplayLevelProps> = ({data,index,onDelete}) =>{
                     <p className="text-3xl font-mono ml-2 mt-2 font-semibold">{value.title}</p>
                 </div>
                 <div>
-                    <p className="text-xl font-semibold font-mono">Problem Statement:</p>
-                    <p className="text-2xl font-mono ml-2 mt-2 font-semibold">{value.content.problem}</p>
+                    <p className="text-xl  font-semibold  font-mono">Problem Statement:</p>
+                    <p className="text-2xl font-mono whitespace-pre ml-2 mt-2 font-semibold">{value.content.problem}</p>
                 </div>
                 <div>
                     <p className="text-xl font-semibold font-mono">Input:</p>
-                    <p className="text-2xl font-mono ml-2 mt-2 font-semibold">{value.content.input}</p>
+                    <p className="text-2xl font-mono whitespace-pre ml-2 mt-2 font-semibold">{value.content.input}</p>
                 </div>
                 <div>
                     <p className="text-xl font-semibold font-mono">Output:</p>
-                    <p className="text-2xl font-mono ml-2 mt-2 font-semibold">{value.content.input}</p>
+                    <p className="text-2xl font-mono whitespace-pre ml-2 mt-2 font-semibold">{value.content.output}</p>
                 </div>
                 <div className="">
                         <p className="text-xl font-semibold font-mono">Answer:</p>
-                        <p className="text-2xl font-mono ml-2 mt-2 font-semibold">{value.content.answer}</p>
+                        <p className="text-2xl whitespace-pre font-mono ml-2 mt-2 font-semibold">{value.content.answer}</p>
                 </div>
                     </div>
                 ))

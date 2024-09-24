@@ -108,7 +108,7 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
                     {display && (
                         <>
                             {levelData.map((value, index) => (
-                                value.questions.map((_, inex) => (
+                                value?.questions?.map((_, inex) => (
                                     <p key={`L${index}Q${inex + 1}`}>L{index}Q{inex + 1}</p>
                                 ))
                             ))}
@@ -137,7 +137,7 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
                                 {value.codeData ? (
                                     <>
                                         {levelData.map((q, index) => (
-                                            q.questions.map((_, inedx) => (
+                                            q?.questions?.map((_, inedx) => (
                                                 <p key={`codeLength_${index}_${inedx}`}>{getCodeLength(value.codeData.finalAnswer[index].answer[inedx].code)}</p>
                                             ))
                                         ))}
