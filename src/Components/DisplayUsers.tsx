@@ -20,7 +20,7 @@ const formatTime = (seconds: number) => {
 
 export const getScore = (data: userDataType): number => {
     let score = 0;
-    for (let i = 0; i < data.codeData.finalAnswer.length; i++) {
+    for (let i = 0; i < data?.codeData?.finalAnswer?.length; i++) {
         score += data?.codeData?.finalAnswer[i]?.score!;
     }
     return score;
@@ -32,13 +32,25 @@ const getCodeLength = (code: string): number => {
 
 const getTotalLine = (value: userDataType): number => {
     let lines = 0;
-    value.codeData.finalAnswer.forEach((val) => {
+    value?.codeData?.finalAnswer?.forEach((val) => {
         val.answer.forEach((answer) => {
             lines += getCodeLength(answer.code);
         });
     });
     return lines;
 };
+
+const questionCount = (value: Level[]): number => {
+    if (!value) return 14;
+    return value.reduce((acc, level) => acc + level.questions.length, 5);
+};
+
+const gridTemplateColumns = (count:number,display:boolean):React.CSSProperties => ({
+    gridTemplateColumns: `repeat(${display ?count : 4}, minmax(0, 1fr))`,
+});
+
+
+
 
 const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, display, handleFlag, flag }) => {
     const [sortMethod, setSortMethod] = useState<string>("Score");
@@ -95,8 +107,8 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
                     </select>
                 </div>
             )}
-            <div className="w-full overflow-x-auto p-5">
-                <div className={`w-full font-bold p-2 bg-[#2f81edaf] border-2 border-black grid ${!display ? "grid-cols-4" : "grid-cols-[repeat(11,minmax(0,1fr))]"} rounded-sm`}>
+            <div className="w-full  p-5">
+                <div style={gridTemplateColumns(questionCount(levelData),display)} className={`w-full overflow-auto font-bold p-2 bg-[#2f81edaf] border-2 border-black grid  rounded-sm`}>
                     <p className="">S.NO</p>
                     <p className="">Roll NO</p>
                     {
@@ -119,7 +131,7 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
                     )}
                 </div>
                 {sortedData && sortedData.map((value, index) => (
-                    <div key={index} className={`w-full gap-5 p-2 bg-gray-300 hover:bg-gray-400 border border-black grid  ${!display ? "grid-cols-4" : "grid-cols-[repeat(11,minmax(0,1fr))]"} rounded-sm`}>
+                    <div key={index} style={gridTemplateColumns(questionCount(levelData),display)} className={`w-full overflow-auto   gap-5 p-2 bg-gray-300 hover:bg-gray-400 border border-black grid  rounded-sm`}>
                         <p className="">{index + 1}.</p>
                         <p className="">
                             <Link to={`/profile/${value.formData.name}`} key={index} state={{ value, levelData }} className={`${display ? "" : "pointer-events-none"}`}>
@@ -138,7 +150,7 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
                                     <>
                                         {levelData.map((q, index) => (
                                             q?.questions?.map((_, inedx) => (
-                                                <p key={`codeLength_${index}_${inedx}`}>{getCodeLength(value?.codeData?.finalAnswer[index]?.answer[inedx]?.code)}</p>
+                                                <p key={`codeLength_${index}_${inedx}`}>{getCodeLength(value?.codeData?.finalAnswer[index]?.answer[inedx]?.code || "")}</p>
                                             ))
                                         ))}
                                         <p className="">{getTotalLine(value)}</p>

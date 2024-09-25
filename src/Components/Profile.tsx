@@ -66,7 +66,7 @@ export default function Profile() {
         {state?.value?.codeData ? (
           <>
             <p>{getScore(state.value)}</p>
-            <p>{formatTime(60 * 60 - state?.value?.codeData?.timeLeft!)}</p>
+            <p>{formatTime(60 * 180 - state?.value?.codeData?.timeLeft!)}</p>
           </>
         ) : (
           <>
@@ -81,7 +81,7 @@ export default function Profile() {
             <div key={levelIndex} className="bg-white border-2 w-full h-full border-black rounded-md p-3 text-black font-mono">
               <p className="font-mono font-bold text-3xl">Level: {levelIndex}</p>
               {level.answer.map((answer, answerIndex) => (
-                <div key={answerIndex} className="bg-slate-400 p-3 mt-2 rounded-lg">
+                answer.answered && (<div key={answerIndex} className="bg-slate-400 p-3 mt-2 rounded-lg">
                   <p className="text-center font-mono font-bold text-3xl">Question: {answerIndex + 1}</p>
                   <div>
                     <p className="font-mono font-bold text-2xl">Title:</p>
@@ -127,7 +127,7 @@ export default function Profile() {
                     <p className="font-bold text-xl">Output:</p>
                     <p className="mt-2 font-semibold">{answer?.output}</p>
                   </div>
-                </div>
+                </div>)
               ))}
             </div>
           ))

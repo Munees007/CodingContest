@@ -16,6 +16,7 @@ import { FaTrash } from "react-icons/fa";
 import timerAni from "../assets/animations/timer1.json";
 import { useNavigate } from "react-router-dom";
 import { answerType, Level } from "../types/QuestionType";
+import { addCodeData } from "../Database/functions/addData";
 
 export const getCurrentLevelIndex = () =>{
   const temp:number = parseInt(localStorage.getItem("LevelIndicator")!) || 0
@@ -53,7 +54,16 @@ const Editor: React.FC<EditorProps> = ({useLevel,levelIndex, ExecuteCode, Result
     const temp:boolean = Boolean(localStorage.getItem("gameover")) || false
     return temp;
   });
-  const [codeData,setCodeData] = useState<answerType | null>(null);
+  const [codeData,setCodeData] = useState<answerType | null>(()=>{
+    const temp = localStorage.getItem("codeData");
+    if(temp)
+    {
+      return JSON.parse(temp);
+    }
+    else{
+      return null
+    }
+  });
   useEffect(()=>{
       const temp = localStorage.getItem("gameover") || "false";
       const timer = localStorage.getItem("timer") || "60";
@@ -163,8 +173,17 @@ const Editor: React.FC<EditorProps> = ({useLevel,levelIndex, ExecuteCode, Result
           localStorage.setItem("timer",timer.toString())
           
       },1000)
+      const gameOverDataToDB = async ()=>{
+        const data = localStorage.getItem("codeData");
+
+        if(data)
+        {
+          await addCodeData(JSON.parse(data))
+        }
+      }
       if(timer ===0)
       {
+        gameOverDataToDB()
         setTimer(0);
         setTimerRunning(false);
         setGameOver(true);
@@ -172,6 +191,7 @@ const Editor: React.FC<EditorProps> = ({useLevel,levelIndex, ExecuteCode, Result
         localStorage.setItem("gameover","true");
         navigate('/thankYou')
       }
+      
       if(timer === 5400)
       {
         localStorage.setItem("breakTimer","true");
