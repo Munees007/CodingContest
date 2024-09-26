@@ -66,7 +66,7 @@ export default function Profile() {
         {state?.value?.codeData ? (
           <>
             <p>{getScore(state.value)}</p>
-            <p>{formatTime(60 * 180 - state?.value?.codeData?.timeLeft!)}</p>
+            <p>{formatTime(60 * 150 - state?.value?.codeData?.timeLeft!)}</p>
           </>
         ) : (
           <>

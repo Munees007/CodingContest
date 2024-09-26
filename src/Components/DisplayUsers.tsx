@@ -1,3 +1,4 @@
+// import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import { Link } from "react-router-dom";
 import { userDataType } from "../Pages/Admin";
 import React, { useEffect, useState } from "react";
@@ -66,11 +67,12 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
 
     const sortByTimeTaken = () => {
         return [...userData].sort((a, b) => {
-            const timeA = (60 * 180) - a.codeData.timeLeft!;
-            const timeB = (60 * 180) - b.codeData.timeLeft!;
+            const timeA = (60 * 150) - a.codeData.timeLeft!;
+            const timeB = (60 * 150) - b.codeData.timeLeft!;
             return timeA - timeB; // Smallest first
         });
     };
+                            
 
     useEffect(() => {
         if (display) {
@@ -86,8 +88,16 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
         }
     }, [userData, sortMethod, display]);
 
+
     return (
         <div className="w-full overflow-auto">
+            {/* <PDFDownloadLink
+        document={<PdfDocument sortedData={sortedData} levelData={levelData} />}
+        fileName="data.pdf"
+        style={{ textDecoration: 'none', padding: '10px', backgroundColor: 'blue', color: 'white', borderRadius: '5px' }}
+      >
+        Downloding PDF
+      </PDFDownloadLink> */}
             <p className="text-center font-Roboto text-2xl font-exdivabold">{display ? "Hackathon Score" : "Registered Student Lists"}</p>
             {!display && (
                 <div className="w-full gap-2 flex justify-end p-2">
@@ -155,7 +165,7 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
                                         ))}
                                         <p className="">{getTotalLine(value)}</p>
                                         <p className="">{getScore(value)}</p>
-                                        <p className="w-20">{formatTime(((60 * 180) - value?.codeData?.timeLeft!))}</p>
+                                        <p className="w-20">{formatTime(((60 * 150) - value?.codeData?.timeLeft!))}</p>
                                     </>
                                 ) : (
                                     <>
@@ -171,5 +181,54 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
         </div>
     );
 };
+// const styles = StyleSheet.create({
+//     page: { padding: 20 },
+//     section: { marginBottom: 10 },
+//     table: { display: 'flex', width: 'auto', margin: 10 },
+//     row: { flexDirection: 'row', borderBottom: '1px solid #000', padding: 5 },
+//     cell: { flex: 1, padding: 5, textAlign: 'center' },
+//     header: { fontWeight: 'bold' },
+//   });
+//   interface PdFProps{
+//     sortedData:userDataType[],
+//     levelData:Level[]
+//   }
+//   const PdfDocument:React.FC<PdFProps> = ({ sortedData, levelData }) => {
+//     return (
+//       <Document>
+//         <Page size={[841.89, 595.28]} style={styles.page}>
+//           <View style={styles.section}>
+//             {levelData.map((value, index) => (
+//               <View key={index} style={styles.row}>
+//                 {value.questions.map((_, qIndex) => (
+//                   <Text key={`L${index}Q${qIndex + 1}`} style={styles.cell}>
+//                     L{index}Q{qIndex + 1}
+//                   </Text>
+//                 ))}
+//               </View>
+//             ))}
+//           </View>
+//           <View style={styles.table}>
+//             {sortedData.map((value, index) => (
+//               <View key={index} style={styles.row}>
+//                 <Text style={styles.cell}>{index + 1}</Text>
+//                 <Text style={styles.cell}>{value.formData.rollNumber}</Text>
+//                 {levelData.map((q, qIndex) => (
+//                   q.questions.map((_, questionIndex) => (
+//                     <Text key={`codeLength_${qIndex}_${questionIndex}`} style={styles.cell}>
+//                       {getCodeLength(value?.codeData?.finalAnswer[qIndex]?.answer[questionIndex]?.code || "")}
+//                     </Text>
+//                   ))
+//                 ))}
+//                 <Text style={styles.cell}>{getTotalLine(value)}</Text>
+//                 <Text style={styles.cell}>{getScore(value)}</Text>
+//                 <Text style={styles.cell}>{formatTime((60 * 150) - value?.codeData?.timeLeft!)}</Text>
+//               </View>
+//             ))}
+//           </View>
+//         </Page>
+//       </Document>
+//     );
+//   };
 
 export default DisplayUsers;
