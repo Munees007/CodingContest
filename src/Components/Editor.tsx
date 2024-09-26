@@ -347,6 +347,24 @@ const Editor: React.FC<EditorProps> = ({useLevel,levelIndex, ExecuteCode, Result
   //   const temp = Math.floor(Math.random() * val);
   //   return temp;
   // }  
+  const changeNextBtn = ():boolean =>{
+    const maxLength = localStorage.getItem("MaxLength");
+    if(maxLength)
+    {
+        const length = parseInt(maxLength);
+        if(currentLevel.levelIndex===length-1)
+        {
+          return true
+        }
+        else{
+          return false
+        }
+    }
+    else{
+      return false
+    }
+
+  }
   if(breakTimer)
     {
       return <div className="w-full fixed bgBreakTimer text-black flex flex-col justify-center items-center h-screen">
@@ -366,7 +384,7 @@ const Editor: React.FC<EditorProps> = ({useLevel,levelIndex, ExecuteCode, Result
       }
       {
         levelIncrease && 
-          <button className="absolute bottom-10 bg-green-600 w-24 h-10 rounded-md cursor-pointer pointer-events-auto right-96" onClick={handleDatasubmit}>next Level</button>
+          <button className="absolute bottom-10 bg-green-600 px-2 font-bold border-2 hover:bg-green-800 w-fit h-10 rounded-md cursor-pointer pointer-events-auto right-96 uppercase font-Orbiton" onClick={handleDatasubmit}>{changeNextBtn() ? "Exit" : "next Level"}</button>
       }
       <div className="flex gap-4 mt-6">
         <DropDown
@@ -383,6 +401,7 @@ const Editor: React.FC<EditorProps> = ({useLevel,levelIndex, ExecuteCode, Result
           value={language}
           condition={"Language"}
         />
+        <p className="text-center  text-xl font-bold  ">LEVEL: {currentLevel.levelIndex}</p>
         <p className="text-center  text-xl font-bold  ">QUESTION: {questionNo}</p>
         <div style={{border:"2px solid",borderRadius:"8px"}} 
         className="flex absolute bg-blue-500 h-12 shadow-md shadow-gray-500  w-fit p-2 right-52 mr-10 top-20 justify-center items-center">
@@ -394,7 +413,7 @@ const Editor: React.FC<EditorProps> = ({useLevel,levelIndex, ExecuteCode, Result
             <VscCheck size={30} onClick={handleSubmit}  className={`mr-4 hover:scale-105 active:scale-90`}/>
           </button>
           <VscSave onClick={handleSave} title="Save" size={30} className="mr-4 cursor-pointer hover:scale-105 active:scale-90" />
-          <VscPlay onClick={runCode} title="Run" size={30} className="cursor-pointer hover:scale-105 active:scale-90" />
+          <VscPlay onClick={runCode} title="Run" size={30} className="pointer-events-auto cursor-pointer hover:scale-105 active:scale-90" />
         </div>
       </div>
       <div className="flex w-full gap-4 mt-7">
@@ -423,7 +442,7 @@ const Editor: React.FC<EditorProps> = ({useLevel,levelIndex, ExecuteCode, Result
         <div style={{border:"2px solid",borderRadius:"8px"}} className={` w-full mt-2 h-[30rem] p-2 overflow-y-auto shadow-md shadow-gray-500`}>
           <div className="flex justify-between">
             <p className="text-2xl font-serif font-bold">Output:</p>
-            <FaTrash size={22} onClick={clearOutput} className="m-1 cursor-pointer" title="clear output window"/>
+            <FaTrash size={22} onClick={clearOutput} className="pointer-events-auto m-1 cursor-pointer" title="clear output window"/>
           </div>
           <div className="w-full">
             {
@@ -457,9 +476,9 @@ const Editor: React.FC<EditorProps> = ({useLevel,levelIndex, ExecuteCode, Result
       <div className="flex w-full mt-6">
         <div className="flex  items-center w-fit z-30  px-5 gap-5" style={{border:"2px solid",borderRadius:"8px"}}>
           <img src="/assets/images/3.jpg" className="w-14 rounded-full shadow-sm shadow-black border-2 border-black"></img>
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center font-Orbiton font-bold">
             <p className="">Organised by</p>
-            <p>R. Karthik Balan,</p>
+            <p>R. Karthik Balan</p>
             <p>III BCA</p>
             {/* <p>Chairman of the Softech Association.</p> */}
           </div>
@@ -469,9 +488,9 @@ const Editor: React.FC<EditorProps> = ({useLevel,levelIndex, ExecuteCode, Result
       <div className="flex w-full justify-end mt-6">
         <div className="flex  items-center w-fit z-30  px-5 gap-5" style={{border:"2px solid",borderRadius:"8px"}}>
           <img src="/assets/images/MwLogo.png" className="w-14"></img>
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center font-Orbiton font-bold">
             <p className="">Developed by</p>
-            <p>P. Muneeswaran,</p>
+            <p>P. Muneeswaran</p>
             <p>III BCA</p>
             {/* <p>Chairman of the Softech Association.</p> */}
           </div>

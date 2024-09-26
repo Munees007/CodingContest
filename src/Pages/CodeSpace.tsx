@@ -4,7 +4,7 @@ import "../Modules/themes";
 import { VscArrowLeft, VscArrowRight } from "react-icons/vsc";
 import "../Modules/questions";
 import Question from "../Components/Question";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.min.css";
 import Lottie from "lottie-react";
 import normalLoading from "../assets/animations/normalLoading.json";
@@ -124,6 +124,8 @@ const CodeSpace = () => {
         });
         
         localStorage.setItem("LevelIndicator", level.toString());
+        handleQuestion(1,false,true,level);
+        toast.success(`Level${level-1} Completed`);
       } else {
         localStorage.setItem("LevelIndicator", (level + 1).toString());
         localStorage.setItem("gameover", "true");
