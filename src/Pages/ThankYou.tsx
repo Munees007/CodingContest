@@ -12,14 +12,13 @@ const ThankYou = ()=>{
             }
     },[navigate])
     return(
-        <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-gray-100">
-        <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full">
-          <h2 className="text-2xl font-semibold mb-4">Welcome and Thank You!</h2>
-          <p className="mb-4">Dear Participants,</p>
-          <p className="mb-4">A huge thank you to all the amazing participants who took part in the hackathon! Your creativity, teamwork, and dedication truly made this event a success. We were blown away by the innovative solutions you developed in such a short time.</p>
-          <h3 className="text-xl font-semibold mb-2">Credits</h3>
-          <p className="mb-4">We would like to extend our special thanks to our seniors and the faculty members for their invaluable support and guidance. A heartfelt thank you to our Head of Department for approving and encouraging this event.</p>
-          <p>We appreciate your participation and enthusiasm. We hope to see you in future events!</p>
+        <div className="flex flex-col items-center  justify-center min-h-screen p-4 bg-gradient-to-r from-cyan-500 to-blue-500">
+        <div className="backdrop-blur-md bg-white/20  p-6 rounded-lg shadow-lg shadow-black relative  w-[42rem]">
+          <h2 className="text-2xl font-semibold mb-4 font-Orbiton">Special Thanks To!</h2>
+          <p className="mb-4 text-justify text-xl font-Roboto">We would like to extend our heartfelt gratitude to our Head of Department, <b>Dr.R.Vengateshkumar,MCA.,M.Phil.,Ph.D.</b> for their unwavering support and approval of this event.</p>
+          <p className="mb-4 text-justify text-xl font-Roboto">A special thank you to <b>Mr.S.Alagukumar,MCA.,M.Phil.,</b> and <b>Mrs.T.Krishnaveni,M.sc.,M.Phil.,</b> for their continuous guidance throughout the process.</p>
+          <p className="mb-4 text-justify text-xl font-Roboto">We also deeply appreciate the contributions of <b>all faculty members</b> and the <b>student volunteers</b> who worked tirelessly to ensure everything ran smoothly.</p>
+          <p className="mb-4 text-justify text-xl font-Roboto">Lastly, we are incredibly thankful to you, <b>the participants</b>, for your enthusiasm and hard work. Your energy and passion have made this event truly memorable.</p>
         </div>
       </div>
     )

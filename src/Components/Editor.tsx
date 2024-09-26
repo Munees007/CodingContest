@@ -37,6 +37,14 @@ export const formatTime = (seconds: number) => {
   const remainingSeconds = seconds % 60;
   return `${minutes}m ${remainingSeconds}s`;
 };
+const codeDataToDB = async ()=>{
+  const data = localStorage.getItem("codeData");
+
+  if(data)
+  {
+    await addCodeData(JSON.parse(data))
+  }
+}
 const Editor: React.FC<EditorProps> = ({useLevel,levelIndex, ExecuteCode, Result,questionNo,clearOutput,currentLevel ,increaseLevel}) => {
 
   const [code, setCode] = useState<string>(()=>{
@@ -79,8 +87,8 @@ const Editor: React.FC<EditorProps> = ({useLevel,levelIndex, ExecuteCode, Result
       return parseInt(temp)
     } 
     else{
-      localStorage.setItem("timer",(60*180).toString());
-      return 60*180; // time in seconds 
+      localStorage.setItem("timer",(60*150).toString());
+      return 60*150; // time in seconds 
     }
   })
   const [currentLevelIndex,setCurrentLevelIndex] = useState<number>(()=>{
@@ -173,17 +181,10 @@ const Editor: React.FC<EditorProps> = ({useLevel,levelIndex, ExecuteCode, Result
           localStorage.setItem("timer",timer.toString())
           
       },1000)
-      const gameOverDataToDB = async ()=>{
-        const data = localStorage.getItem("codeData");
-
-        if(data)
-        {
-          await addCodeData(JSON.parse(data))
-        }
-      }
+      
       if(timer ===0)
       {
-        gameOverDataToDB()
+        codeDataToDB()
         setTimer(0);
         setTimerRunning(false);
         setGameOver(true);
@@ -294,6 +295,7 @@ const Editor: React.FC<EditorProps> = ({useLevel,levelIndex, ExecuteCode, Result
           localStorage.setItem("Level" + getCurrentLevelIndex() +"question" + questionNo + "answered","true");
           const data:any = getQuestionsFromLocalStorage(currentLevel.questions.length,getCurrentLevelIndex())
           console.log(data)
+          codeDataToDB();
           toast.success("Correct answer");
         }
         else{

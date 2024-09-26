@@ -19,7 +19,7 @@ const Form = () => {
     className: "",
     email: "",
   });
-  const [formSubmitted,_] = useState<boolean>(()=>{
+  const [formSubmitted,setFormSubmitted] = useState<boolean>(()=>{
     const temp = localStorage.getItem("formSubmitted");
 
     return temp ? Boolean(temp) : false;
@@ -40,6 +40,7 @@ const Form = () => {
         email: "",
       });
       toast.success("form Submitted");
+      setFormSubmitted(true);
       localStorage.setItem("formSubmitted","true");
       localStorage.setItem("userData", JSON.stringify(formData));
     } catch (error) {
