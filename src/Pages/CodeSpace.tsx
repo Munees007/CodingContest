@@ -124,7 +124,7 @@ const CodeSpace = () => {
         });
         
         localStorage.setItem("LevelIndicator", level.toString());
-        handleQuestion(1,false,true,level);
+        handleQuestion(1,false,false,level);
         toast.success(`Level${level-1} Completed`);
       } else {
         localStorage.setItem("LevelIndicator", (level + 1).toString());
