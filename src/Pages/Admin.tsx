@@ -123,7 +123,7 @@ const Admin = () => {
           </div>
         </div>
       ) : (
-        <div className=" rounded-lg gap-3 font-Roboto p-3  h-screen flex overflow-hidden">
+        <div className=" rounded-lg gap-3 font-Roboto p-3  h-screen flex overflow-auto">
           {/* SideBar Section */}
           <div className="h-screen w-72 p-5 gap-3 rounded-lg font-Roboto flex flex-col  bg-white ">
             <div
@@ -178,7 +178,7 @@ const Admin = () => {
               </div>
             )}
             {showPanels[1] && (
-              <div className="w-full mr-10 bg-white rounded-lg p-5">
+              <div className="w-full mr-10 bg-white rounded-lg p-10">
                 <DisplayUsers
                   flag={flag!}
                   userData={userData!}

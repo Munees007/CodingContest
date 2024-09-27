@@ -67,8 +67,8 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
 
     const sortByTimeTaken = () => {
         return [...userData].sort((a, b) => {
-            const timeA = (60 * 150) - a.codeData.timeLeft!;
-            const timeB = (60 * 150) - b.codeData.timeLeft!;
+            const timeA = (60 * 150) - a.codeData?.timeLeft!;
+            const timeB = (60 * 150) - b.codeData?.timeLeft!;
             return timeA - timeB; // Smallest first
         });
     };

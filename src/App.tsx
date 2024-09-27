@@ -7,6 +7,7 @@ import CodeSpace from './Pages/CodeSpace'
 import Admin from './Pages/Admin'
 import Profile from './Components/Profile'
 import ThankYou from './Pages/ThankYou'
+import QuestionPage from './Components/QuestionPage'
 
 function App() {
   useEffect(()=>{
@@ -30,6 +31,7 @@ function App() {
             <Route path="/admin" element={<Admin/>}/>
             <Route path='/profile/:userName' element={<Profile/>}/>
             <Route path='/thankYou' element={<ThankYou/>}/>
+            <Route path='/qn' element={<QuestionPage/>}/>
         </Routes>
       </Router>
     </div>
