@@ -39,7 +39,7 @@ const DisplayLevel:React.FC<DisplayLevelProps> = ({data,index,onDelete}) =>{
                 </div>
                 <div className="">
                         <p className="text-xl font-semibold font-mono">Answer:</p>
-                        <p className="text-2xl whitespace-pre font-mono ml-2 mt-2 font-semibold">{value.content.answer}</p>
+                        <p className="text-2xl font-mono ml-2 mt-2 font-semibold">{value.content.answer}</p>
                 </div>
                     </div>
                 ))
