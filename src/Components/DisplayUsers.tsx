@@ -1,4 +1,4 @@
-// import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
+import { Document, Page, Text, View,  PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
 import { Link } from "react-router-dom";
 import { userDataType } from "../Pages/Admin";
 import React, { useEffect, useState } from "react";
@@ -72,6 +72,23 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
             return timeA - timeB; // Smallest first
         });
     };
+    const sortByScoreAndTime = () => {
+        return [...userData].sort((a, b) => {
+            // Get scores
+            const scoreA = getScore(a);
+            const scoreB = getScore(b);
+    
+            // Sort by score first (highest score first)
+            if (scoreB !== scoreA) {
+                return scoreB - scoreA;
+            }
+    
+            // If scores are equal, sort by time taken (smallest first)
+            const timeA = (60 * 150) - a.codeData?.timeLeft!;
+            const timeB = (60 * 150) - b.codeData?.timeLeft!;
+            return timeA - timeB; // Smallest first
+        });
+    };
                             
 
     useEffect(() => {
@@ -83,6 +100,8 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
                 sortedData = sortByTotalLines();
             } else if (sortMethod === "TimeTaken") {
                 sortedData = sortByTimeTaken();
+            } else if(sortMethod === "bothScoreTime"){
+                sortedData = sortByScoreAndTime();
             }
             setSortedData(sortedData!);
         }
@@ -91,13 +110,13 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
 
     return (
         <div className="w-full overflow-auto">
-            {/* <PDFDownloadLink
+            <PDFDownloadLink
         document={<PdfDocument sortedData={sortedData} levelData={levelData} />}
         fileName="data.pdf"
-        style={{ textDecoration: 'none', padding: '10px', backgroundColor: 'blue', color: 'white', borderRadius: '5px' }}
+        style={{ textDecoration: 'none',position:'absolute',right:8,top:8, padding: '8px', backgroundColor: '#2f81edaf', color: 'black', borderRadius: '5px' }}
       >
         Downloding PDF
-      </PDFDownloadLink> */}
+      </PDFDownloadLink>
             <p className="text-center font-Roboto text-2xl font-exdivabold">{display ? "Hackathon Score" : "Registered Student Lists"}</p>
             {!display && (
                 <div className="w-full gap-2 flex justify-end p-2">
@@ -114,6 +133,7 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
                         <option value="TotalLine">Total Line</option>
                         <option value="Score">Score</option>
                         <option value="TimeTaken">Time Taken</option>
+                        <option value="bothScoreTime">Both Score & Time</option>
                     </select>
                 </div>
             )}
@@ -156,7 +176,7 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
                     }
                         {display && (
                             <>
-                                {value.codeData ? (
+                                {value?.codeData ? (
                                     <>
                                         {levelData.map((q, index) => (
                                             q?.questions?.map((_, inedx) => (
@@ -170,7 +190,7 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
                                 ) : (
                                     <>
                                         <p className="">-</p>
-                                        <p className="">0m 0s</p>
+                                        <p className="">{formatTime((60*150))}</p>
                                     </>
                                 )}
                             </>
@@ -181,54 +201,117 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
         </div>
     );
 };
-// const styles = StyleSheet.create({
-//     page: { padding: 20 },
-//     section: { marginBottom: 10 },
-//     table: { display: 'flex', width: 'auto', margin: 10 },
-//     row: { flexDirection: 'row', borderBottom: '1px solid #000', padding: 5 },
-//     cell: { flex: 1, padding: 5, textAlign: 'center' },
-//     header: { fontWeight: 'bold' },
-//   });
-//   interface PdFProps{
-//     sortedData:userDataType[],
-//     levelData:Level[]
-//   }
-//   const PdfDocument:React.FC<PdFProps> = ({ sortedData, levelData }) => {
-//     return (
-//       <Document>
-//         <Page size={[841.89, 595.28]} style={styles.page}>
-//           <View style={styles.section}>
-//             {levelData.map((value, index) => (
-//               <View key={index} style={styles.row}>
-//                 {value.questions.map((_, qIndex) => (
-//                   <Text key={`L${index}Q${qIndex + 1}`} style={styles.cell}>
-//                     L{index}Q{qIndex + 1}
-//                   </Text>
-//                 ))}
-//               </View>
-//             ))}
-//           </View>
-//           <View style={styles.table}>
-//             {sortedData.map((value, index) => (
-//               <View key={index} style={styles.row}>
-//                 <Text style={styles.cell}>{index + 1}</Text>
-//                 <Text style={styles.cell}>{value.formData.rollNumber}</Text>
-//                 {levelData.map((q, qIndex) => (
-//                   q.questions.map((_, questionIndex) => (
-//                     <Text key={`codeLength_${qIndex}_${questionIndex}`} style={styles.cell}>
-//                       {getCodeLength(value?.codeData?.finalAnswer[qIndex]?.answer[questionIndex]?.code || "")}
-//                     </Text>
-//                   ))
-//                 ))}
-//                 <Text style={styles.cell}>{getTotalLine(value)}</Text>
-//                 <Text style={styles.cell}>{getScore(value)}</Text>
-//                 <Text style={styles.cell}>{formatTime((60 * 150) - value?.codeData?.timeLeft!)}</Text>
-//               </View>
-//             ))}
-//           </View>
-//         </Page>
-//       </Document>
-//     );
-//   };
+
+const chunkData = (data: any[], chunkSize: number) => {
+    const chunks = [];
+    for (let i = 0; i < data.length; i += chunkSize) {
+      chunks.push(data.slice(i, i + chunkSize));
+    }
+    return chunks;
+  };
+  
+  interface PdFProps {
+    sortedData: userDataType[],
+    levelData: Level[]
+  }
+  
+  const PdfDocument: React.FC<PdFProps> = ({ sortedData }) => {
+    return (
+      <Document>
+        <Page size={[841.89, 595.28]} wrap style={{padding:10}}>
+          {/* First Page Title and Headers */}
+          <View style={{ display: 'flex', flexDirection: 'column', paddingBottom: 10 }}>
+            <Text style={{
+              textAlign: 'center',
+              fontSize: 30,
+              fontWeight: 'extrabold',
+              marginTop: 3
+            }}>INTRA HACKATHON-2k24</Text>
+            <Text style={{
+              textAlign: 'center',
+              fontSize: 25,
+              fontWeight: 'extrabold',
+              marginTop: 3
+            }}>SCORE SHEET</Text>
+          </View>
+  
+          {/* Table Header - Will be shown on the first page */}
+          <View style={{
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            borderBottom: '2px',
+            paddingBottom: 10
+          }}>
+            <Text style={{ width: 50, height: 40, textAlign: 'center' }}>S.no</Text>
+            <Text style={{ width: 200, height: 40, textAlign: 'center' }}>Roll</Text>
+            <Text style={{ width: 220, height: 40, textAlign: 'center' }}>Name</Text>
+            <Text style={{ width: 100, height: 40, textAlign: 'center' }}>Class</Text>
+            <Text style={{ width: 50, height: 40, textAlign: 'center' }}>LOC</Text>
+            <Text style={{ width: 50, height: 40, textAlign: 'center' }}>Score</Text>
+            <Text style={{ width: 100, height: 40, textAlign: 'center' }}>TT</Text>
+          </View>
+  
+          {/* Data Rows with Dynamic Wrapping */}
+          <View wrap>
+            {sortedData.map((value, index) => (
+              <View key={index} style={{
+                display: 'flex',
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                borderBottom: '1px',
+                paddingVertical: 5
+              }}>
+                <Text style={{
+                  width: 50,
+                  height: 40,
+                  textAlign: 'center',
+                  paddingTop: 7
+                }}>{index + 1}</Text>
+                <Text style={{
+                  width: 200,
+                  height: 40,
+                  textAlign: 'center',
+                  paddingTop: 7
+                }}>{value.formData.rollNumber}</Text>
+                <Text style={{
+                  width: 220,
+                  height: 40,
+                  textAlign: 'center',
+                  paddingTop: 7
+                }}>{value.formData.name}</Text>
+                <Text style={{
+                  width: 100,
+                  height: 40,
+                  textAlign: 'center',
+                  paddingTop: 7
+                }}>{value.formData.className}</Text>
+                <Text style={{
+                  width: 50,
+                  height: 40,
+                  textAlign: 'center',
+                  paddingTop: 7,
+                  marginLeft:4
+                }}>{getTotalLine(value)}</Text>
+                <Text style={{
+                  width: 50,
+                  height: 40,
+                  textAlign: 'center',
+                  paddingTop: 7
+                }}>{getScore(value)}</Text>
+                <Text style={{
+                  width: 100,
+                  height: 40,
+                  textAlign: 'center',
+                  paddingTop: 7
+                }}>{formatTime((60 * 150) - value?.codeData?.timeLeft!)}</Text>
+              </View>
+            ))}
+          </View>
+        </Page>
+      </Document>
+    );
+  };
+  
 
 export default DisplayUsers;
