@@ -1,4 +1,4 @@
-import { Document, Page, Text, View,  PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
+import { Document, Page, Text, View,  PDFDownloadLink } from '@react-pdf/renderer';
 import { Link } from "react-router-dom";
 import { userDataType } from "../Pages/Admin";
 import React, { useEffect, useState } from "react";
@@ -202,14 +202,6 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
     );
 };
 
-const chunkData = (data: any[], chunkSize: number) => {
-    const chunks = [];
-    for (let i = 0; i < data.length; i += chunkSize) {
-      chunks.push(data.slice(i, i + chunkSize));
-    }
-    return chunks;
-  };
-  
   interface PdFProps {
     sortedData: userDataType[],
     levelData: Level[]
