@@ -367,14 +367,6 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
     );
 };
 
-const chunkData = (data: any[], chunkSize: number) => {
-    const chunks = [];
-    for (let i = 0; i < data.length; i += chunkSize) {
-      chunks.push(data.slice(i, i + chunkSize));
-    }
-    return chunks;
-  };
-  
   interface PdFProps {
     sortedData: userDataType[],
     levelData: Level[]
