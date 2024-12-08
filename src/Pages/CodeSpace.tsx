@@ -17,11 +17,20 @@ import { getCurrentLevelIndex } from "../Components/Editor";
 
 const CodeSpace = () => {
   const navigate = useNavigate();
+  const dateObj = new Date();
   useEffect(() => {
+    const date = localStorage.getItem("date");
     const temp = localStorage.getItem("formSubmitted");
-    if (!temp) {
+    if(date === dateObj.toLocaleDateString())
+    {
+      if (!temp) {
+        navigate("/");
+      }
+    }
+    else{
       navigate("/");
     }
+    
   }, [navigate]);
   const [theme, setTheme] = useState<string>(() => {
     const temp = localStorage.getItem("theme");
@@ -111,7 +120,7 @@ const CodeSpace = () => {
 
   const increaseLevel = async () => {
     let level: number = getCurrentLevelIndex();
-    console.log("triggered");
+    console.log("triggered","level", level);
     if (levelData) {
       if (level < levelData?.length - 1) {
         level++;
@@ -175,7 +184,7 @@ const CodeSpace = () => {
               <p className="text-2xl font-mono m-2">
                 Level{getCurrentLevelIndex()}
               </p>
-              {currentLevel.questions.map((question, index) => (
+              {currentLevel?.questions?.map((question, index) => (
                 <Question
                   key={index}
                   useLevel={false}
@@ -189,7 +198,7 @@ const CodeSpace = () => {
               ))}
               <p className="text-2xl font-mono m-2">Completed</p>
               <div>
-                {completedData.map((value, index) => (
+                {completedData?.map((value, index) => (
                   <div key={index}>
                     <p>Level {index}</p>
                     {value.questions.map((question, questionIndex) => (

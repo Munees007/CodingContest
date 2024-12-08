@@ -13,8 +13,9 @@ const Home = () =>{
     const [currentImg, setCurrentImg] = useState<string>("Bg1");
     const backGround = ["Bg1", "bg3", "bg2"];
     const navigate =  useNavigate();
+    const dateObj = new Date();
     useEffect(()=>{
-        enterFullScreen();
+        enterFullScreen(document.location.pathname);
     },[])
     const handleImageChange = (direction: "next" | "prev") => {
       const currentIndex = backGround.indexOf(currentImg);
@@ -23,18 +24,28 @@ const Home = () =>{
   };
     const handleChangeRoute = async () =>{
       const temp = localStorage.getItem("formSubmitted");
-      if(!temp)
-        {
-          navigate('/');
-        }
-        else{
-           const flag = await getFlag();
+      const date = localStorage.getItem("date");
 
-           if(flag === true)
-           {
-              navigate('/codespace')
-           }
-        }
+      if(date === dateObj.toLocaleDateString())
+      {
+        if(!temp)
+          {
+            navigate('/');
+          }
+          else{
+             const flag = await getFlag();
+  
+             if(flag === true)
+             {
+                navigate('/codespace')
+             }
+          }
+      }
+      else
+      {
+        localStorage.clear();
+        localStorage.setItem("date",dateObj.toLocaleDateString());
+      }
     }
     useEffect(()=>{
         const handleInterval =  setInterval(()=>{

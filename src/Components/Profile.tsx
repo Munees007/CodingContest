@@ -77,28 +77,28 @@ export default function Profile() {
       </div>
       <div className="whitespace-pre grid mt-5 grid-cols-1 gap-3">
         {state?.value?.codeData ? (
-          state?.value?.codeData.finalAnswer.map((level, levelIndex) => (
+          state?.value?.codeData?.finalAnswer?.map((level, levelIndex) => (
             <div key={levelIndex} className="bg-white border-2 w-full h-full border-black rounded-md p-3 text-black font-mono">
               <p className="font-mono font-bold text-3xl">Level: {levelIndex}</p>
-              {level.answer.map((answer, answerIndex) => (
+              {level?.answer?.map((answer, answerIndex) => (
                 answer.answered && (<div key={answerIndex} className="bg-slate-400 p-3 mt-2 rounded-lg">
                   <p className="text-center font-mono font-bold text-3xl">Question: {answerIndex + 1}</p>
-                  <div>
+                  {/* <div>
                     <p className="font-mono font-bold text-2xl">Title:</p>
                     <p className="font-mono text-xl ml-3">{state?.levelData[levelIndex]?.questions[answerIndex]?.title}</p>
                   </div>
                   <div>
                     <p className="font-mono font-bold text-2xl">Problem Statement:</p>
-                    <p className="font-mono text-xl ml-3">{state?.levelData[levelIndex]?.questions[answerIndex]?.content.problem}</p>
+                    <p className="font-mono text-xl ml-3">{state?.levelData[levelIndex]?.questions[answerIndex]?.content?.problem}</p>
                   </div>
                   <div>
                     <p className="font-mono font-bold text-2xl">Input:</p>
-                    <p className="font-mono text-xl ml-3">{state?.levelData[levelIndex]?.questions[answerIndex]?.content.input}</p>
+                    <p className="font-mono text-xl ml-3">{state?.levelData[levelIndex]?.questions[answerIndex]?.content?.input}</p>
                   </div>
                   <div>
                     <p className="font-mono font-bold text-2xl">Output:</p>
-                    <p className="font-mono text-xl ml-3">{state?.levelData[levelIndex]?.questions[answerIndex]?.content.output}</p>
-                  </div>
+                    <p className="font-mono text-xl ml-3">{state?.levelData[levelIndex]?.questions[answerIndex]?.content?.output}</p>
+                  </div> */}
                   <p className="font-bold text-2xl">Language: {answer?.language}</p>
                   <div className="flex flex-col">
                     <p className="font-bold text-xl">Code:</p>

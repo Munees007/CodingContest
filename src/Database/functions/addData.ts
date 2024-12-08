@@ -1,4 +1,4 @@
-import { get, ref, set, update } from "firebase/database";
+import { get, ref, serverTimestamp, set, update } from "firebase/database";
 import { FormData } from "../../Components/Form";
 import { db } from "../firebase";
 
@@ -7,17 +7,21 @@ import { answerType, Level, questionType } from "../../types/QuestionType";
 export async function addData(formData:FormData){
     try {
         const roll = formData.rollNumber;
-
+        
         const userRef = ref(db,`users/${roll}`);
 
         const userSnapShot = await get(userRef);
-
         if(userSnapShot.exists())
         {
             throw new Error("Already There")
         }
         else{
-            await set(userRef,{formData});
+            await set(userRef,{ 
+                formData:{
+                    ...formData,
+                    timestamp: serverTimestamp()
+                } 
+            });
 
             console.log("form submitted successfully");
         }
@@ -27,7 +31,38 @@ export async function addData(formData:FormData){
         console.log(error);
     }
 }
-
+export async function addTimestampsToExistingUsers(): Promise<void> {
+    try {
+      const usersRef = ref(db, `users`);
+      const snapshot = await get(usersRef);
+  
+      if (snapshot.exists()) {
+        const updates: { [key: string]: any } = {};
+        snapshot.forEach((childSnapshot) => {
+          const key = childSnapshot.key!;
+          const data = childSnapshot.val();
+  
+          // Check if formData exists and if timestamp is missing
+          if (data.formData && !data.formData.timestamp) {
+            updates[`${key}/formData/timestamp`] = 1727431200000;
+          }
+        });
+  
+        if (Object.keys(updates).length > 0) {
+          await update(usersRef, updates);
+          console.log("Timestamps added to existing users!");
+        } else {
+          console.log("All users already have timestamps.");
+        }
+      } else {
+        console.log("No users found in the database.");
+      }
+    } catch (error) {
+      console.error("Error adding timestamps to existing users:", error);
+    }
+  }
+  
+  
 export async function addCodeData(codeData:answerType){
     try {
         const userData = localStorage.getItem("userData");

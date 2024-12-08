@@ -23,7 +23,7 @@ function App() {
     });
   },[])
   return (
-    <div onClick={enterFullScreen} className='overflow-hidden'>
+    <div onClick={()=>{enterFullScreen(document.location.pathname)}} className='overflow-hidden'>
       <Router>
         <Routes>
             <Route path='/' element={<Home/>}></Route>

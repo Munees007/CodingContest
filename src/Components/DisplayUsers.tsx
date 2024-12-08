@@ -1,8 +1,11 @@
-import { Document, Page, Text, View,  PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
+import { Document, Page, Text, View,  PDFDownloadLink } from '@react-pdf/renderer';
 import { Link } from "react-router-dom";
 import { userDataType } from "../Pages/Admin";
 import React, { useEffect, useState } from "react";
 import { Level } from "../types/QuestionType";
+import { Table, TableProps } from 'antd';
+import { Timestamp } from 'firebase/firestore';
+import Item from 'antd/es/list/Item';
 
 interface DisplayUsersProps {
     userData: userDataType[],
@@ -43,7 +46,7 @@ const getTotalLine = (value: userDataType): number => {
 
 const questionCount = (value: Level[]): number => {
     if (!value) return 14;
-    return value.reduce((acc, level) => acc + level.questions.length, 5);
+    return value.reduce((acc, level) => acc + level?.questions?.length, 5);
 };
 
 const gridTemplateColumns = (count:number,display:boolean):React.CSSProperties => ({
@@ -56,6 +59,20 @@ const gridTemplateColumns = (count:number,display:boolean):React.CSSProperties =
 const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, display, handleFlag, flag }) => {
     const [sortMethod, setSortMethod] = useState<string>("Score");
     const [sortedData, setSortedData] = useState<userDataType[]>(userData);
+    const [selectedDate,setSelectedDate] = useState<string>("all");
+    const [date,setDate] = useState<string>(()=>{
+        const temp = localStorage.getItem("date");
+
+        if(temp)
+        {
+            return temp
+        }
+        else
+        {
+            return "all"
+        }
+    });
+    const [Dates,setDates] = useState<string[]>([]);
 
     const sortByScore = () => {
         return [...userData].sort((a, b) => getScore(b) - getScore(a)); // Highest score first
@@ -89,11 +106,161 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
             return timeA - timeB; // Smallest first
         });
     };
-                            
 
+    const seperateDataWithDate = () =>{
+        return [...userData].filter((item)=>{
+            const timeStamp = item.formData.timestamp;
+            if(typeof timeStamp === 'number')
+            {
+                const itemDate = new Date(timeStamp).toLocaleDateString()
+                console.log(itemDate)
+                return itemDate === selectedDate;
+            }
+            return false
+        })
+    }
+
+    const sortByDate = () => {
+        const TimeStamps: Set<number> = new Set(); // Using Set to avoid duplicates
+    
+        userData?.forEach((user) => {
+            let timestampValue = user?.formData?.timestamp;
+    
+            if (typeof timestampValue === 'number') {
+                TimeStamps.add(timestampValue);
+            }
+        });
+    
+        const dates:string[] = [];
+    
+        // Now iterate over the Set and log the formatted date
+        TimeStamps.forEach((timestampValue) => {
+            const date = new Date(timestampValue); // Convert to JavaScript Date
+            dates.push(date.toLocaleDateString());
+        });
+
+        setDates(dates);
+    };
+    
+    
+    
+                            
+    const columns:TableProps<userDataType>['columns'] = [
+        {
+            key:"sno",
+            title:"S.No",
+            dataIndex:"sno",
+            render:(_,__,index)=>{
+                return(<p>{index + 1}</p>);
+            }
+        },
+        {
+            key:"rollNumber",
+            title:"Roll No",
+            dataIndex:"rollNumber",
+            render(_, record) {
+                return <p>{record.formData.rollNumber}</p>
+            },
+        },
+        {
+            key:"name",
+            title:"Name",
+            dataIndex:"name",
+            render(_, record) {
+                return <p>{record.formData.name}</p>
+            },
+        },
+        {
+            key:"email",
+            title:"Email",
+            dataIndex:"email",
+            render(_, record) {
+                return <p>{record.formData.email}</p>
+            },
+        },
+    ];
+    const DashColumns: TableProps<userDataType>['columns'] = [
+        {
+          title: "S.No",
+          key: "sno",
+          render: (_, __, index) => {
+            return <span>{index + 1}</span>;
+          },
+        },
+        {
+          title: "Roll No",
+          key: "rollNumber",
+          render: (_, record) => {
+            return (
+              <Link to={`/profile/${record.formData.name}`} state={{ value: record, levelData }}>
+                {record.formData.rollNumber}
+              </Link>
+            );
+          },
+        },
+        {
+          title: "Name",
+          key: "name",
+          render: (_, record) => {
+            return <span>{record.formData.name}</span>;
+          },
+        },
+        {
+          title: "Email",
+          key: "email",
+          render: (_, record) => {
+            return <span>{record.formData.email}</span>;
+          },
+        },
+        {
+          title: "Code Length",
+          key: "codeLength",
+          render: (_, record) => {
+            return record?.codeData ? (
+              <>
+                {levelData?.map((q, index) => (
+                  q?.questions?.map((_, inIndex) => (
+                    <span key={`codeLength_${index}_${inIndex}`}>
+                      {getCodeLength(record?.codeData?.finalAnswer[index]?.answer[inIndex]?.code || "")}
+                    </span>
+                  ))
+                ))}
+              </>
+            ) : (
+              <span>-</span>
+            );
+          },
+        },
+        {
+          title: "Total Lines",
+          key: "totalLines",
+          render: (_, record) => {
+            return <span>{getTotalLine(record)}</span>;
+          },
+        },
+        {
+          title: "Score",
+          key: "score",
+          render: (_, record) => {
+            return <span>{getScore(record)}</span>;
+          },
+        },
+        {
+          title: "Time Left",
+          key: "timeLeft",
+          render: (_, record) => {
+            return (
+              <span>{formatTime((60 * 150) - record?.codeData?.timeLeft!)}</span>
+            );
+          },
+        },
+      ];
+      
     useEffect(() => {
+        sortByDate()
+        let sortedData;
         if (display) {
-            let sortedData;
+            
             if (sortMethod === "Score") {
                 sortedData = sortByScore();
             } else if (sortMethod === "TotalLine") {
@@ -103,13 +270,21 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
             } else if(sortMethod === "bothScoreTime"){
                 sortedData = sortByScoreAndTime();
             }
+
             setSortedData(sortedData!);
         }
-    }, [userData, sortMethod, display]);
+        if(selectedDate !== "all")
+        {  
+            sortedData = seperateDataWithDate();
+            console.log(sortedData)
+            setSortedData(sortedData);
+        }
+    }, [userData, sortMethod, display,selectedDate]);
 
 
     return (
         <div className="w-full overflow-auto">
+            <button onClick={()=>{sortByDate()}}>click</button>
             <PDFDownloadLink
         document={<PdfDocument sortedData={sortedData} levelData={levelData} />}
         fileName="data.pdf"
@@ -126,6 +301,17 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
                     </span>
                 </div>
             )}
+            <div className="w-full flex justify-start">
+                    <p className="mr-2">Seprate Data with Date:</p>
+                    <select className="border-2 rounded-md" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)}>
+                        <option value="all">All</option>
+                        {
+                            Dates.map((date,index)=>(
+                                <option value={date} key={index}>{date.toUpperCase()}</option>
+                            ))
+                        }
+                    </select>
+                </div>
             {display && (
                 <div className="w-full flex justify-end">
                     <p className="mr-2">Sorting Method:</p>
@@ -138,29 +324,7 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
                 </div>
             )}
             <div className="w-full  p-5">
-                <div style={gridTemplateColumns(questionCount(levelData),display)} className={`w-full overflow-auto font-bold p-2 bg-[#2f81edaf] border-2 border-black grid  rounded-sm`}>
-                    <p className="">S.NO</p>
-                    <p className="">Roll NO</p>
-                    {
-                        !display && <p>Name</p>
-                    }
-                    {
-                        !display && <p>Email</p>
-                    }
-                    {display && (
-                        <>
-                            {levelData.map((value, index) => (
-                                value?.questions?.map((_, inex) => (
-                                    <p key={`L${index}Q${inex + 1}`}>L{index}Q{inex + 1}</p>
-                                ))
-                            ))}
-                            <p className="">Total</p>
-                            <p className="">Score</p>
-                            <p className="">Time Taken</p>
-                        </>
-                    )}
-                </div>
-                {sortedData && sortedData.map((value, index) => (
+                {/* {sortedData && sortedData.map((value, index) => (
                     <div key={index} style={gridTemplateColumns(questionCount(levelData),display)} className={`w-full overflow-auto   gap-5 p-2 bg-gray-300 hover:bg-gray-400 border border-black grid  rounded-sm`}>
                         <p className="">{index + 1}.</p>
                         <p className="">
@@ -169,10 +333,10 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
                             </Link>
                         </p>
                         {
-                        !display && <p>{value.formData.name}</p>
+                        !display && <p>{value?.formData?.name}</p>
                     }
                     {
-                        !display && <p>{value.formData.email}</p>
+                        !display && <p>{value?.formData?.email}</p>
                     }
                         {display && (
                             <>
@@ -196,7 +360,8 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
                             </>
                         )}
                     </div>
-                ))}
+                ))} */}
+                <Table columns={!display ? columns : DashColumns} dataSource={sortedData}/>
             </div>
         </div>
     );

@@ -87,7 +87,7 @@ const Editor: React.FC<EditorProps> = ({useLevel,levelIndex, ExecuteCode, Result
       return parseInt(temp)
     } 
     else{
-      localStorage.setItem("timer",(60*150).toString());
+      localStorage.setItem("timer",(60*60).toString());
       return 60*150; // time in seconds 
     }
   })
@@ -200,7 +200,7 @@ const Editor: React.FC<EditorProps> = ({useLevel,levelIndex, ExecuteCode, Result
         setBreakTimer(true);
       }
       
-      if(currentLevel.questions.length === getScore())
+      if(currentLevel?.questions?.length === getScore())
       {
           console.log("IncreasedLevel")
           setLevelIncrease(true);

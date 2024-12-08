@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-pdf/renderer": "^4.0.0",
     "ace-builds": "^1.35.4",
+    "antd": "^5.22.3",
     "firebase": "^10.12.5",
     "lottie-react": "^2.4.0",
     "pdf-lib": "^1.17.1",
