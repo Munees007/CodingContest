@@ -88,7 +88,7 @@ const Editor: React.FC<EditorProps> = ({useLevel,levelIndex, ExecuteCode, Result
     } 
     else{
       localStorage.setItem("timer",(60*60).toString());
-      return 60*150; // time in seconds 
+      return 60*60; // time in seconds 
     }
   })
   const [currentLevelIndex,setCurrentLevelIndex] = useState<number>(()=>{
