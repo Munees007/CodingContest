@@ -4,8 +4,6 @@ import { userDataType } from "../Pages/Admin";
 import React, { useEffect, useState } from "react";
 import { Level } from "../types/QuestionType";
 import { Table, TableProps } from 'antd';
-import { Timestamp } from 'firebase/firestore';
-import Item from 'antd/es/list/Item';
 
 interface DisplayUsersProps {
     userData: userDataType[],
@@ -44,15 +42,6 @@ const getTotalLine = (value: userDataType): number => {
     return lines;
 };
 
-const questionCount = (value: Level[]): number => {
-    if (!value) return 14;
-    return value.reduce((acc, level) => acc + level?.questions?.length, 5);
-};
-
-const gridTemplateColumns = (count:number,display:boolean):React.CSSProperties => ({
-    gridTemplateColumns: `repeat(${display ?count : 4}, minmax(0, 1fr))`,
-});
-
 
 
 
@@ -60,18 +49,6 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
     const [sortMethod, setSortMethod] = useState<string>("Score");
     const [sortedData, setSortedData] = useState<userDataType[]>(userData);
     const [selectedDate,setSelectedDate] = useState<string>("all");
-    const [date,setDate] = useState<string>(()=>{
-        const temp = localStorage.getItem("date");
-
-        if(temp)
-        {
-            return temp
-        }
-        else
-        {
-            return "all"
-        }
-    });
     const [Dates,setDates] = useState<string[]>([]);
 
     const sortByScore = () => {

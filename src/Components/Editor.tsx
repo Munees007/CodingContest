@@ -241,7 +241,7 @@ const Editor: React.FC<EditorProps> = ({useLevel,levelIndex, ExecuteCode, Result
   ];
   const languages = [
     { label: "C++", value: "cpp" },
-    { label: "Java", value: "java" },
+    { label: "Python", value: "python" },
   ];
 
   const handleTheme = (value: string) => {
