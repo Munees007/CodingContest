@@ -4,14 +4,13 @@ import {enterFullScreen} from "../Functions/FullScreen"
 import { useNavigate } from "react-router-dom";
 import { BiSolidLeftArrow, BiSolidRightArrow } from "react-icons/bi";
 import Form from "../Components/Form";
-import Credits from "../Components/Credit";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/ReactToastify.min.css";
 import { getFlag } from "../Database/functions/addData";
 
 const Home = () =>{
     const [currentImg, setCurrentImg] = useState<string>("Bg1");
-    const backGround = ["Bg1", "bg3", "bg2"];
+    const backGround = ["legacyofcodebg", "bg3"];
     const navigate =  useNavigate();
     const dateObj = new Date();
     useEffect(()=>{
@@ -59,11 +58,6 @@ const Home = () =>{
         {backGround.indexOf(currentImg) === 1 && (
           <div className={`absolute bg-black/60 inset-0 flex items-center justify-center `}>
             <Form/>
-          </div>
-        )}
-        {backGround.indexOf(currentImg) === 2 && (
-          <div className="absolute bg-black/50 inset-0   flex items-center justify-center">
-              <Credits/>
           </div>
         )}
         <div className="absolute inset-y-1/2 left-0 right-0 flex justify-between px-4 z-10">

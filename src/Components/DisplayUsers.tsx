@@ -98,24 +98,26 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
     }
 
     const sortByDate = () => {
-        const TimeStamps: Set<number> = new Set(); // Using Set to avoid duplicates
+        const TimeStamps: Set<string> = new Set(); // Using Set to avoid duplicates
     
         userData?.forEach((user) => {
             let timestampValue = user?.formData?.timestamp;
     
             if (typeof timestampValue === 'number') {
-                TimeStamps.add(timestampValue);
+
+              const date = new Date(timestampValue); // Convert to JavaScript Date
+                TimeStamps.add(date.toLocaleDateString());
             }
         });
     
         const dates:string[] = [];
     
         // Now iterate over the Set and log the formatted date
-        TimeStamps.forEach((timestampValue) => {
-            const date = new Date(timestampValue); // Convert to JavaScript Date
-            dates.push(date.toLocaleDateString());
+        TimeStamps.forEach((date) => {
+            
+            dates.push(date);
         });
-
+        console.log(dates);
         setDates(dates);
     };
     
@@ -250,7 +252,11 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
 
             setSortedData(sortedData!);
         }
-        if(selectedDate !== "all")
+        if(selectedDate  === "all")
+        {
+            setSortedData(userData)
+        } 
+        else
         {  
             sortedData = seperateDataWithDate();
             console.log(sortedData)
@@ -261,7 +267,6 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
 
     return (
         <div className="w-full overflow-auto">
-            <button onClick={()=>{sortByDate()}}>click</button>
             <PDFDownloadLink
         document={<PdfDocument sortedData={sortedData} levelData={levelData} />}
         fileName="data.pdf"

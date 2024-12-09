@@ -19,7 +19,7 @@ const MatrixEffect: React.FC = () => {
     const draw = () => {
       context.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
 
-      context.fillStyle = '#0F0'; // Green text
+      context.fillStyle = '#FFF'; // Green text
       context.font = `${fontSize}px monospace`;
 
       for (let i = 0; i < drops.length; i++) {
