@@ -380,7 +380,6 @@ const Editor: React.FC<EditorProps> = ({useLevel,levelIndex, ExecuteCode, Result
     }
   return (
     <div className={`ace-${theme ? theme : "dracula"} ${useLevel ? "pointer-events-none" :""} ${codeData?.finalAnswer[currentLevelIndex]?.answer[questionNo-1]?.answered ? "pointer-events-none" : ""} relative h-screen p-5 overflow-hidden`}>
-      <button onClick={()=>{console.log()}}>click</button>
       <p className="text-4xl font-bold text-center">Legacy Of Code</p>
       {
         codeData?.finalAnswer[currentLevelIndex]?.answer[questionNo-1]?.answered && <p className="text-xl text-green-500 uppercase font-bold absolute top-5 right-10">completed</p>

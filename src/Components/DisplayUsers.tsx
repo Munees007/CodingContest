@@ -64,8 +64,8 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
     const sortByTimeTaken = () => {
       const data = seperateDataWithDate();
         return [...data].sort((a, b) => {
-            const timeA = (60 * 60) - a.codeData?.timeLeft!;
-            const timeB = (60 * 60) - b.codeData?.timeLeft!;
+          const timeA = (60 * 60) - (a.codeData?.timeLeft !== undefined ? a.codeData?.timeLeft : (0));
+          const timeB = (60 * 60) - (b.codeData?.timeLeft !== undefined ? b.codeData?.timeLeft : (0));
             return timeA - timeB; // Smallest first
         });
     };
@@ -82,8 +82,8 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
             }
     
             // If scores are equal, sort by time taken (smallest first)
-            const timeA = (60 * 60) - a.codeData?.timeLeft!;
-            const timeB = (60 * 60) - b.codeData?.timeLeft!;
+            const timeA = (60 * 60) - (a.codeData?.timeLeft !== undefined ? a.codeData?.timeLeft : (0));
+            const timeB = (60 * 60) - (b.codeData?.timeLeft !== undefined ? b.codeData?.timeLeft : (0));
             return timeA - timeB; // Smallest first
         });
     };
