@@ -229,7 +229,7 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
           key: "timeLeft",
           render: (_, record) => {
             return (
-              <span>{formatTime((60 * 150) - record?.codeData?.timeLeft!)}</span>
+              <span>{formatTime((60 * 60) - record?.codeData?.timeLeft!)}</span>
             );
           },
         },
