@@ -52,22 +52,26 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
     const [Dates,setDates] = useState<string[]>([]);
 
     const sortByScore = () => {
-        return [...userData].sort((a, b) => getScore(b) - getScore(a)); // Highest score first
+        const data = seperateDataWithDate();
+        return [...data].sort((a, b) => getScore(b) - getScore(a)); // Highest score first
     };
 
     const sortByTotalLines = () => {
-        return [...userData].sort((a, b) => getTotalLine(a) - getTotalLine(b)); // Smallest first
+      const data = seperateDataWithDate();
+        return [...data].sort((a, b) => getTotalLine(a) - getTotalLine(b)); // Smallest first
     };
 
     const sortByTimeTaken = () => {
-        return [...userData].sort((a, b) => {
-            const timeA = (60 * 150) - a.codeData?.timeLeft!;
-            const timeB = (60 * 150) - b.codeData?.timeLeft!;
+      const data = seperateDataWithDate();
+        return [...data].sort((a, b) => {
+            const timeA = (60 * 60) - a.codeData?.timeLeft!;
+            const timeB = (60 * 60) - b.codeData?.timeLeft!;
             return timeA - timeB; // Smallest first
         });
     };
     const sortByScoreAndTime = () => {
-        return [...userData].sort((a, b) => {
+      const data = seperateDataWithDate();
+        return [...data].sort((a, b) => {
             // Get scores
             const scoreA = getScore(a);
             const scoreB = getScore(b);
@@ -78,14 +82,14 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
             }
     
             // If scores are equal, sort by time taken (smallest first)
-            const timeA = (60 * 150) - a.codeData?.timeLeft!;
-            const timeB = (60 * 150) - b.codeData?.timeLeft!;
+            const timeA = (60 * 60) - a.codeData?.timeLeft!;
+            const timeB = (60 * 60) - b.codeData?.timeLeft!;
             return timeA - timeB; // Smallest first
         });
     };
 
     const seperateDataWithDate = () =>{
-        return [...userData].filter((item)=>{
+        return selectedDate === "all" ? userData : [...userData].filter((item)=>{
             const timeStamp = item.formData.timestamp;
             if(typeof timeStamp === 'number')
             {
@@ -235,34 +239,28 @@ const DisplayUsers: React.FC<DisplayUsersProps> = ({ userData, levelData, displa
         },
       ];
       
-    useEffect(() => {
-        sortByDate()
+      useEffect(() => {
+        sortByDate();
         let sortedData;
+    
+    
+        // Sorting logic based on the sort method
         if (display) {
-            
             if (sortMethod === "Score") {
                 sortedData = sortByScore();
             } else if (sortMethod === "TotalLine") {
                 sortedData = sortByTotalLines();
             } else if (sortMethod === "TimeTaken") {
                 sortedData = sortByTimeTaken();
-            } else if(sortMethod === "bothScoreTime"){
+            } else if (sortMethod === "bothScoreTime") {
                 sortedData = sortByScoreAndTime();
             }
-
-            setSortedData(sortedData!);
         }
-        if(selectedDate  === "all")
-        {
-            setSortedData(userData)
-        } 
-        else
-        {  
-            sortedData = seperateDataWithDate();
-            console.log(sortedData)
-            setSortedData(sortedData);
-        }
-    }, [userData, sortMethod, display,selectedDate]);
+    
+        // Update the state with the sorted data
+        setSortedData(sortedData!);
+    }, [userData, sortMethod, display, selectedDate]);
+    
 
 
     return (
